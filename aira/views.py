@@ -17,8 +17,8 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 import pandas as pd
 
-from .forms import AgrifieldForm, IrrigationlogForm, ProfileForm
-from .models import Agrifield, IrrigationLog, Profile
+from .forms import AgrifieldForm, AppliedIrrigationForm, ProfileForm
+from .models import Agrifield, AppliedIrrigation, Profile
 
 
 class IrrigationPerformanceView(DetailView):
@@ -257,9 +257,9 @@ class DeleteAgrifieldView(LoginRequiredMixin, DeleteView):
         return context
 
 
-class CreateIrrigationLogView(LoginRequiredMixin, CreateView):
-    model = IrrigationLog
-    form_class = IrrigationlogForm
+class CreateAppliedIrrigationView(LoginRequiredMixin, CreateView):
+    model = AppliedIrrigation
+    form_class = AppliedIrrigationForm
     success_url = "/home"
     template_name_suffix = "/create"
 
@@ -282,29 +282,29 @@ class CreateIrrigationLogView(LoginRequiredMixin, CreateView):
         return context
 
 
-class UpdateIrrigationLogView(LoginRequiredMixin, UpdateView):
-    model = IrrigationLog
-    form_class = IrrigationlogForm
+class UpdateAppliedIrrigationView(LoginRequiredMixin, UpdateView):
+    model = AppliedIrrigation
+    form_class = AppliedIrrigationForm
     template_name_suffix = "/update"
 
     def get_success_url(self):
         return reverse("home", kwargs={"username": self.object.agrifield.owner})
 
     def get_object(self):
-        irrigation_log = super().get_object()
-        irrigation_log.agrifield.can_edit(self.request.user)
-        return irrigation_log
+        applied_irrigation = super().get_object()
+        applied_irrigation.agrifield.can_edit(self.request.user)
+        return applied_irrigation
 
 
-class DeleteIrrigationLogView(LoginRequiredMixin, DeleteView):
-    model = IrrigationLog
-    form_class = IrrigationlogForm
+class DeleteAppliedIrrigationView(LoginRequiredMixin, DeleteView):
+    model = AppliedIrrigation
+    form_class = AppliedIrrigationForm
     template_name_suffix = "/confirm_delete"
 
     def get_object(self):
-        irrigation_log = super().get_object()
-        irrigation_log.agrifield.can_edit(self.request.user)
-        return irrigation_log
+        applied_irrigation = super().get_object()
+        applied_irrigation.agrifield.can_edit(self.request.user)
+        return applied_irrigation
 
     def get_success_url(self):
         return reverse("home", kwargs={"username": self.object.agrifield.owner})

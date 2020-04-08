@@ -23,7 +23,7 @@ from hspatial.test import setup_test_raster
 from model_mommy import mommy
 from selenium.webdriver.common.by import By
 
-from aira.models import Agrifield, IrrigationLog
+from aira.models import Agrifield, AppliedIrrigation
 from aira.tests import RandomMediaRootMixin
 from aira.tests.test_agrifield import DataTestCase
 
@@ -413,10 +413,10 @@ class RecommendationViewTestCase(TestDataMixin, TestCase):
     def test_response_contains_last_irrigation_with_specified_applied_water(self):
         tz = pytz.timezone(settings.TIME_ZONE)
         mommy.make(
-            IrrigationLog,
+            AppliedIrrigation,
             agrifield=self.agrifield,
-            time=tz.localize(dt.datetime(2019, 9, 11, 17, 23)),
-            applied_water=100.5,
+            timestamp=tz.localize(dt.datetime(2019, 9, 11, 17, 23)),
+            volume=100.5,
         )
         self._make_request()
         self.assertContains(
@@ -427,10 +427,10 @@ class RecommendationViewTestCase(TestDataMixin, TestCase):
     def test_response_contains_last_irrigation_with_unspecified_applied_water(self):
         tz = pytz.timezone(settings.TIME_ZONE)
         mommy.make(
-            IrrigationLog,
+            AppliedIrrigation,
             agrifield=self.agrifield,
-            time=tz.localize(dt.datetime(2019, 9, 11, 17, 23)),
-            applied_water=None,
+            timestamp=tz.localize(dt.datetime(2019, 9, 11, 17, 23)),
+            volume=None,
         )
         self._update_agrifield(area=653.7)
         self._make_request()
@@ -545,10 +545,10 @@ class LastIrrigationOutsidePeriodWarningTestCase(TestDataMixin, TestCase):
     def _create_irrigation_event(self):
         tz = pytz.timezone(settings.TIME_ZONE)
         mommy.make(
-            IrrigationLog,
+            AppliedIrrigation,
             agrifield=self.agrifield,
-            time=tz.localize(dt.datetime(2019, 10, 25, 6, 30)),
-            applied_water=58,
+            timestamp=tz.localize(dt.datetime(2019, 10, 25, 6, 30)),
+            volume=58,
         )
 
     def _login(self):

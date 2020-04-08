@@ -8,8 +8,8 @@
     <b>{% trans "Irrigation efficiency" %}:</b> {{ object.irrigation_efficiency }} <br>
     <b>{% trans "Irrigation optimizer" %}:</b> {{ object.irrigation_optimizer }} <br>
     {% if object.last_irrigation %}
-      <b>{% trans "Last recorded irrigation" %}:</b> {{ object.last_irrigation.time|date:"d/m/Y H:00" }} <br>
-      <b>{% trans "Applied water" %} (m³):</b> {{ object.last_irrigation.applied_water|floatformat:"1"  }} {% if object.last_irrigation.message %}({{ object.last_irrigation.message }}){% endif %}<br>
+      <b>{% trans "Last recorded irrigation" %}:</b> {{ object.last_irrigation.timestamp|date:"d/m/Y H:00" }} <br>
+      <b>{% trans "Applied water" %} (m³):</b> {{ object.last_irrigation.volume|floatformat:"1"  }} {% if object.last_irrigation.message %}({{ object.last_irrigation.message }}){% endif %}<br>
     {% else %}
       <b>{% trans "Last recorded irrigation" %}:</b> {% trans "Unspecified" %} <br>
       <b>{% trans "Applied water" %} m³: </b>{% trans "Unspecified" %}

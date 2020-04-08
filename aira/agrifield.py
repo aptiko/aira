@@ -85,10 +85,15 @@ class AgrifieldSWBMixin:
             self.timeseries.index[0] - dt.timedelta(hours=23, minutes=59)
         )
         end = tz.localize(self.timeseries.index[-1])
-        for irrigation_log in self.irrigationlog_set.filter(time__range=(start, end)):
-            date = dt.datetime.combine(irrigation_log.time.date(), dt.time(23, 59))
-            applied_water = irrigation_log.applied_water
-            if applied_water is None:
+        applied_irrigations = self.appliedirrigation_set.filter(
+            timestamp__range=(start, end)
+        )
+        for applied_irrigation in applied_irrigations:
+            date = dt.datetime.combine(
+                applied_irrigation.timestamp.date(), dt.time(23, 59)
+            )
+            volume = applied_irrigation.volume
+            if volume is None:
                 # When an irrigation event has been logged but we don't know how
                 # much, we assume we reached field capacity. At that point we use
                 # "True" instead of a number, which signals to
@@ -97,7 +102,7 @@ class AgrifieldSWBMixin:
                 self.timeseries.at[date, "actual_net_irrigation"] = True
                 self.timeseries.at[date, "applied_irrigation"] = None
             else:
-                applied_water_mm = float(applied_water / self.area * 1000)
+                applied_water_mm = float(volume / self.area * 1000)
                 self.timeseries.at[date, "actual_net_irrigation"] = (
                     applied_water_mm * self.irrigation_efficiency
                 )
@@ -250,7 +255,7 @@ class AgrifieldSWBResultsMixin:
     @property
     def last_irrigation_is_outdated(self):
         try:
-            last_irrigation_date = self.last_irrigation.time.date()
+            last_irrigation_date = self.last_irrigation.timestamp.date()
             start_date = self.results["timeseries"].index[0].date()
             end_date = self.results["timeseries"].index[-1].date()
             return last_irrigation_date < start_date or last_irrigation_date > end_date

@@ -15,7 +15,7 @@ from freezegun import freeze_time
 from model_mommy import mommy
 from osgeo import gdal, osr
 
-from aira.models import Agrifield, CropType, IrrigationLog, IrrigationType
+from aira.models import Agrifield, AppliedIrrigation, CropType, IrrigationType
 
 
 def setup_input_file(filename, value, timestamp_str):
@@ -120,17 +120,17 @@ class SetupTestDataMixin:
             location=Point(22.0, 38.0),
             area=2000,
         )
-        cls.irrigation_log_1 = mommy.make(
-            IrrigationLog,
+        cls.applied_irrigation_1 = mommy.make(
+            AppliedIrrigation,
             agrifield=cls.agrifield,
-            time=dt.datetime(2018, 3, 15, 7, 0, tzinfo=dt.timezone.utc),
-            applied_water=500,
+            timestamp=dt.datetime(2018, 3, 15, 7, 0, tzinfo=dt.timezone.utc),
+            volume=500,
         )
-        cls.irrigation_log_2 = mommy.make(
-            IrrigationLog,
+        cls.applied_irrigation_2 = mommy.make(
+            AppliedIrrigation,
             agrifield=cls.agrifield,
-            time=dt.datetime(2018, 3, 19, 7, 0, tzinfo=dt.timezone.utc),
-            applied_water=None,
+            timestamp=dt.datetime(2018, 3, 19, 7, 0, tzinfo=dt.timezone.utc),
+            volume=None,
         )
 
 
@@ -354,15 +354,15 @@ class LastIrrigationIsOutdatedTestCase(DataTestCase):
         cache.set("model_run_1", self.results)
 
     def test_true_if_no_irrigation(self, m):
-        IrrigationLog.objects.all().delete()
+        AppliedIrrigation.objects.all().delete()
         self.assertTrue(self.agrifield.last_irrigation_is_outdated)
 
     def test_true_if_irrigation_too_old(self, m):
-        self.irrigation_log_1.delete()
-        self.irrigation_log_2.time = dt.datetime(
+        self.applied_irrigation_1.delete()
+        self.applied_irrigation_2.timestamp = dt.datetime(
             2018, 3, 10, 20, 0, tzinfo=dt.timezone.utc
         )
-        self.irrigation_log_2.save()
+        self.applied_irrigation_2.save()
         self.assertTrue(self.agrifield.last_irrigation_is_outdated)
 
     def test_false_if_irrigation_ok(self, m):

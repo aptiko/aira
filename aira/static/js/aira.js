@@ -20,7 +20,7 @@ aira.agrifield_edit_document_ready = function () {
     document.getElementById("id_custom_thetaS").step = 0.01;
 };
 
-aira.setupDateTimePickerForIrrigationLog = function () {
+aira.setupDateTimePickerForAppliedIrrigation = function () {
     $("#id_time").datetimepicker({
         format: "yyyy-mm-dd hh:ii",
         autoclose: true,
@@ -28,8 +28,8 @@ aira.setupDateTimePickerForIrrigationLog = function () {
         pickerPosition: "bottom-left"
     });
     $(document).ready(function() {
-        var label_inner = $("label[for='id_applied_water']").html()
-        $("label[for='id_applied_water']").html(label_inner + " (m³)")
+        var label_inner = $("label[for='id_volume']").html()
+        $("label[for='id_volume']").html(label_inner + " (m³)")
     });
 };
 

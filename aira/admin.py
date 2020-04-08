@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Agrifield, CropType, IrrigationLog, IrrigationType, Profile
+from .models import Agrifield, AppliedIrrigation, CropType, IrrigationType, Profile
 
 
 class ProfileAdmin(admin.ModelAdmin):
@@ -26,7 +26,7 @@ class AgrifieldAdmin(admin.ModelAdmin):
     pass
 
 
-class IrrigationLogAdmin(admin.ModelAdmin):
+class AppliedIrrigationAdmin(admin.ModelAdmin):
     pass
 
 
@@ -51,6 +51,6 @@ class IrrigationTypeAdmin(admin.ModelAdmin):
 
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Agrifield, AgrifieldAdmin)
-admin.site.register(IrrigationLog, IrrigationLogAdmin)
+admin.site.register(AppliedIrrigation, AppliedIrrigationAdmin)
 admin.site.register(CropType, CropTypeAdmin)
 admin.site.register(IrrigationType, IrrigationTypeAdmin)

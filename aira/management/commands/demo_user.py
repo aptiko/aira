@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.gis.geos import Point
 from django.core.management.base import BaseCommand
 
-from aira.models import Agrifield, CropType, IrrigationLog, IrrigationType
+from aira.models import Agrifield, AppliedIrrigation, CropType, IrrigationType
 
 
 class Command(BaseCommand):
@@ -37,11 +37,11 @@ class Command(BaseCommand):
                 use_custom_parameters=False,
             )
             f.save()
-            for irlog in item["irrigation_log"]:
-                l, created = IrrigationLog.objects.get_or_create(
+            for applied_irrigation in item["applied_irrigation"]:
+                l, created = AppliedIrrigation.objects.get_or_create(
                     agrifield=f,
-                    time=irlog["time"],
-                    applied_water=irlog["applied_water"],
+                    timestamp=applied_irrigation["timestamp"],
+                    volume=applied_irrigation["volume"],
                 )
                 l.save()
         self.stdout.write("demo user created/updated successfully")

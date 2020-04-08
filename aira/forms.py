@@ -6,7 +6,7 @@ from captcha.fields import CaptchaField
 from geowidgets import LatLonField
 from registration.forms import RegistrationForm
 
-from .models import Agrifield, IrrigationLog, Profile
+from .models import Agrifield, AppliedIrrigation, Profile
 
 
 class ProfileForm(forms.ModelForm):
@@ -85,13 +85,13 @@ class AgrifieldForm(forms.ModelForm):
             self.add_error("is_virtual", msg)
 
 
-class IrrigationlogForm(forms.ModelForm):
+class AppliedIrrigationForm(forms.ModelForm):
     class Meta:
-        model = IrrigationLog
+        model = AppliedIrrigation
         exclude = ("agrifield",)
         labels = {
             "time": _("Date and time (YYYY-MM-DD HH:mm:ss) "),
-            "applied_water": _("Applied irrigation water"),
+            "volume": _("Volume of applied irrigation water"),
         }
 
 

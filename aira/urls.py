@@ -52,17 +52,17 @@ urlpatterns = [
     ),
     path(
         "create_irrigationlog/<int:pk>/",
-        views.CreateIrrigationLogView.as_view(),
+        views.CreateAppliedIrrigationView.as_view(),
         name="create_irrlog",
     ),
     path(
         "update_irrigationlog/<int:pk>/",
-        views.UpdateIrrigationLogView.as_view(),
+        views.UpdateAppliedIrrigationView.as_view(),
         name="update_irrlog",
     ),
     path(
         "delete_irrigationlog/<int:pk>/",
-        views.DeleteIrrigationLogView.as_view(),
+        views.DeleteAppliedIrrigationView.as_view(),
         name="delete_irrlog",
     ),
     path("conversion_tools/", views.ConversionToolsView.as_view(), name="tools",),

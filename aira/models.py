@@ -291,11 +291,11 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
     @property
     def last_irrigation(self):
         try:
-            result = self.irrigationlog_set.latest()
-        except IrrigationLog.DoesNotExist:
+            result = self.appliedirrigation_set.latest()
+        except AppliedIrrigation.DoesNotExist:
             return None
-        if result.applied_water is None:
-            result.applied_water = (
+        if result.volume is None:
+            result.volume = (
                 float(self.p)
                 * (self.field_capacity - self.wilting_point)
                 * self.root_depth
@@ -368,25 +368,24 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
             os.remove(filename)
 
 
-class IrrigationLog(models.Model):
+class AppliedIrrigation(models.Model):
     agrifield = models.ForeignKey(Agrifield, on_delete=models.CASCADE)
-    time = models.DateTimeField()
-    applied_water = models.FloatField(
+    timestamp = models.DateTimeField()
+    volume = models.FloatField(
         null=True, blank=True, validators=[MinValueValidator(0.0)]
     )
 
     class Meta:
-        get_latest_by = "time"
-        ordering = ("-time",)
-        verbose_name_plural = "Irrigation Logs"
+        get_latest_by = "timestamp"
+        ordering = ("-timestamp",)
 
     def __str__(self):
-        return str(self.time)
+        return str(self.timestamp)
 
     def save(self, *args, **kwargs):
-        super(IrrigationLog, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
         self.agrifield._queue_for_calculation()
 
     def delete(self, *args, **kwargs):
-        super(IrrigationLog, self).delete(*args, **kwargs)
+        super().delete(*args, **kwargs)
         self.agrifield._queue_for_calculation()
