@@ -91,8 +91,36 @@ class AppliedIrrigationForm(forms.ModelForm):
         exclude = ("agrifield",)
         labels = {
             "timestamp": _("Date and time (YYYY-MM-DD HH:mm:ss) "),
+            "irrigation_type": _("Type of irrigation used"),
             "supplied_water_volume": _("Volume of applied irrigation water"),
+            "supplied_duration": _("The duration of irrigation in minutes"),
+            "supplied_flow_rate": _("Water flow during irrigation (m³/h)"),
+            "hydrometer_reading_start": _("Hydrometer reading at the start"),
+            "hydrometer_reading_end": _("Hydrometer reading at the end"),
+            "hydrometer_water_percentage": _("Percentage of water passing through"),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        irrigation_type = cleaned_data.get("irrigation_type")
+        if irrigation_type == "VOLUME_OF_WATER":
+            self._validate_required(["supplied_water_volume"])
+        elif irrigation_type == "DURATION_OF_IRRIGATION":
+            self._validate_required(["supplied_duration", "supplied_flow_rate"])
+        elif irrigation_type == "HYDROMETER_READINGS":
+            fields = [
+                "hydrometer_reading_start",
+                "hydrometer_reading_end",
+                "hydrometer_water_percentage",
+            ]
+            self._validate_required(fields)
+        return super().clean()
+
+    def _validate_required(self, fields=[]):
+        # Used to require fields dynamically (depending on other submitted values)
+        for field in fields:
+            if self.cleaned_data.get(field, None) is None:
+                self.add_error(field, _("This field is required."))
 
 
 class MyRegistrationForm(RegistrationForm):

@@ -354,11 +354,11 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
         Returns a dict of all default values from the history of AppliedIrrigations
         per this field. Note that some dict keys won't exist if no previous values.
         """
-        initials = {}
+        initial = {}
         irrigations = self.appliedirrigation_set.all()
         if irrigations.exists():
             # Set the default irrigation type to the latest.
-            initials.update({"irrigation_type": irrigations.last().irrigation_type})
+            initial.update({"irrigation_type": irrigations.last().irrigation_type})
 
         # Update default values of each type according to its latest entry (if any)
         volume_irr = irrigations.filter(irrigation_type="VOLUME_OF_WATER").last()
@@ -368,22 +368,23 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
         hydro_irr = irrigations.filter(irrigation_type="HYDROMETER_READINGS").last()
 
         if volume_irr:
-            field_initials = {"supplied_water_volume": volume_irr.supplied_water_volume}
-            initials.update(field_initials)
+            initial.update({"supplied_water_volume": volume_irr.supplied_water_volume})
         if duration_irr:
-            field_initials = {
-                "supplied_duration": duration_irr.supplied_duration,
-                "supplied_flow_rate": duration_irr.supplied_flow_rate,
-            }
-            initials.update(field_initials)
+            initial.update(
+                {
+                    "supplied_duration": duration_irr.supplied_duration,
+                    "supplied_flow_rate": duration_irr.supplied_flow_rate,
+                }
+            )
         if hydro_irr:
-            field_initials = {
+            # Split into its own variable to accommodate breakline (max-line-length)
+            initial_fields = {
                 "hydrometer_water_percentage": hydro_irr.hydrometer_water_percentage,
                 "hydrometer_reading_start": hydro_irr.hydrometer_reading_end,
             }
-            initials.update(field_initials)
+            initial.update(initial_fields)
 
-        return initials
+        return initial
 
     def _delete_cached_point_timeseries(self):
         filenamesglob = os.path.join(
