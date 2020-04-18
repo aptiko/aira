@@ -356,33 +356,44 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
         """
         initial = {}
         irrigations = self.appliedirrigation_set.all()
-        if irrigations.exists():
+        try:
             # Set the default irrigation type to the latest.
-            initial.update({"irrigation_type": irrigations.last().irrigation_type})
+            initial.update({"irrigation_type": irrigations.latest().irrigation_type})
+        except AppliedIrrigation.DoesNotExist:
+            return {}
 
         # Update default values of each type according to its latest entry (if any)
-        volume_irr = irrigations.filter(irrigation_type="VOLUME_OF_WATER").last()
-        duration_irr = irrigations.filter(
-            irrigation_type="DURATION_OF_IRRIGATION"
-        ).last()
-        hydro_irr = irrigations.filter(irrigation_type="HYDROMETER_READINGS").last()
-
-        if volume_irr:
+        try:
+            volume_irr = irrigations.filter(irrigation_type="VOLUME_OF_WATER").latest()
             initial.update({"supplied_water_volume": volume_irr.supplied_water_volume})
-        if duration_irr:
+        except AppliedIrrigation.DoesNotExist:
+            pass
+
+        try:
+            duration_irr = irrigations.filter(
+                irrigation_type="DURATION_OF_IRRIGATION"
+            ).latest()
             initial.update(
                 {
                     "supplied_duration": duration_irr.supplied_duration,
                     "supplied_flow_rate": duration_irr.supplied_flow_rate,
                 }
             )
-        if hydro_irr:
+        except AppliedIrrigation.DoesNotExist:
+            pass
+
+        try:
+            hydro_irr = irrigations.filter(
+                irrigation_type="HYDROMETER_READINGS"
+            ).latest()
             # Split into its own variable to accommodate breakline (max-line-length)
             initial_fields = {
                 "hydrometer_water_percentage": hydro_irr.hydrometer_water_percentage,
                 "hydrometer_reading_start": hydro_irr.hydrometer_reading_end,
             }
             initial.update(initial_fields)
+        except AppliedIrrigation.DoesNotExist:
+            pass
 
         return initial
 
