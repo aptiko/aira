@@ -416,7 +416,7 @@ class RecommendationViewTestCase(TestDataMixin, TestCase):
             AppliedIrrigation,
             agrifield=self.agrifield,
             timestamp=tz.localize(dt.datetime(2019, 9, 11, 17, 23)),
-            volume=100.5,
+            supplied_water_volume=100.5,
         )
         self._make_request()
         self.assertContains(
@@ -430,7 +430,7 @@ class RecommendationViewTestCase(TestDataMixin, TestCase):
             AppliedIrrigation,
             agrifield=self.agrifield,
             timestamp=tz.localize(dt.datetime(2019, 9, 11, 17, 23)),
-            volume=None,
+            supplied_water_volume=None,
         )
         self._update_agrifield(area=653.7)
         self._make_request()
@@ -440,8 +440,8 @@ class RecommendationViewTestCase(TestDataMixin, TestCase):
         self.assertContains(
             self.response,
             "<b>Applied water (m³):</b> 23.0 "
-            "(Irrigation water is estimated using system&#39;s "
-            "default parameters.)<br>",
+            "(Irrigation water is estimated using system's "
+            "default parameters.)",
         )
 
 
@@ -548,7 +548,7 @@ class LastIrrigationOutsidePeriodWarningTestCase(TestDataMixin, TestCase):
             AppliedIrrigation,
             agrifield=self.agrifield,
             timestamp=tz.localize(dt.datetime(2019, 10, 25, 6, 30)),
-            volume=58,
+            supplied_water_volume=58,
         )
 
     def _login(self):

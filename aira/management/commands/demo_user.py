@@ -41,7 +41,7 @@ class Command(BaseCommand):
                 l, created = AppliedIrrigation.objects.get_or_create(
                     agrifield=f,
                     timestamp=applied_irrigation["timestamp"],
-                    volume=applied_irrigation["volume"],
+                    supplied_water_volume=applied_irrigation["supplied_water_volume"],
                 )
                 l.save()
         self.stdout.write("demo user created/updated successfully")

@@ -91,7 +91,7 @@ class AppliedIrrigationForm(forms.ModelForm):
         exclude = ("agrifield",)
         labels = {
             "timestamp": _("Date and time (YYYY-MM-DD HH:mm:ss) "),
-            "volume": _("Volume of applied irrigation water"),
+            "supplied_water_volume": _("Volume of applied irrigation water"),
         }
 
 

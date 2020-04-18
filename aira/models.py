@@ -291,20 +291,9 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
     @property
     def last_irrigation(self):
         try:
-            result = self.appliedirrigation_set.latest()
+            return self.appliedirrigation_set.latest()
         except AppliedIrrigation.DoesNotExist:
             return None
-        if result.volume is None:
-            result.volume = (
-                float(self.p)
-                * (self.field_capacity - self.wilting_point)
-                * self.root_depth
-                * self.area
-            )
-            result.message = _(
-                "Irrigation water is estimated using system's default parameters."
-            )
-        return result
 
     def can_edit(self, user):
         if (user == self.owner) or (user == self.owner.profile.supervisor):
@@ -369,11 +358,57 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
 
 
 class AppliedIrrigation(models.Model):
+
+    IRRIGATION_TYPES = [
+        ("VOLUME_OF_WATER", _("Volume of water")),
+        ("DURATION_OF_IRRIGATION", _("Duration of irrigation")),
+        ("HYDROMETER_READINGS", _("Hydrometer readings")),
+    ]
+
+    irrigation_type = models.CharField(
+        max_length=50, choices=IRRIGATION_TYPES, default="VOLUME_OF_WATER"
+    )
     agrifield = models.ForeignKey(Agrifield, on_delete=models.CASCADE)
     timestamp = models.DateTimeField()
-    volume = models.FloatField(
+
+    supplied_water_volume = models.FloatField(
         null=True, blank=True, validators=[MinValueValidator(0.0)]
     )
+
+    supplied_duration = models.PositiveIntegerField(
+        "Duration in minutes", null=True, blank=True
+    )
+    supplied_flow_rate = models.FloatField("Flow rate (m3/h)", null=True, blank=True)
+
+    hydrometer_reading_start = models.FloatField(null=True, blank=True)
+    hydrometer_reading_end = models.FloatField(null=True, blank=True)
+    hydrometer_water_percentage = models.FloatField(
+        null=True,
+        blank=True,
+        default=1,
+        validators=[MinValueValidator(0.0), MaxValueValidator(1.0)],
+    )
+
+    @property
+    def volume(self):
+        if self.irrigation_type == "VOLUME_OF_WATER":
+            return self.supplied_water_volume
+        elif self.irrigation_type == "DURATION_OF_IRRIGATION":
+            return self.duration * self.flow_rate
+        elif self.irrigation_type == "HYDROMETER_READINGS":
+            return (
+                self.hydrometer_reading_end - self.hydrometer_reading_start
+            ) * self.hydrometer_water_percentage
+
+    @property
+    def system_default_volume(self):
+        # Can be used as a fallback whenever no volume is associated with the instance.
+        return (
+            float(self.agrifield.p)
+            * (self.agrifield.field_capacity - self.agrifield.wilting_point)
+            * self.agrifield.root_depth
+            * self.agrifield.area
+        )
 
     class Meta:
         get_latest_by = "timestamp"

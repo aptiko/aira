@@ -124,13 +124,13 @@ class SetupTestDataMixin:
             AppliedIrrigation,
             agrifield=cls.agrifield,
             timestamp=dt.datetime(2018, 3, 15, 7, 0, tzinfo=dt.timezone.utc),
-            volume=500,
+            supplied_water_volume=500,
         )
         cls.applied_irrigation_2 = mommy.make(
             AppliedIrrigation,
             agrifield=cls.agrifield,
             timestamp=dt.datetime(2018, 3, 19, 7, 0, tzinfo=dt.timezone.utc),
-            volume=None,
+            supplied_water_volume=None,
         )
 
 

@@ -17,6 +17,6 @@ class Migration(migrations.Migration):
             model_name="appliedirrigation", old_name="time", new_name="timestamp",
         ),
         migrations.RenameField(
-            model_name="appliedirrigation", old_name="applied_water", new_name="volume",
+            model_name="appliedirrigation", old_name="applied_water", new_name="supplied_water_volume",
         ),
     ]

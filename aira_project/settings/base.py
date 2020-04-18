@@ -108,7 +108,9 @@ AIRA_DEMO_USER_INITIAL_AGRIFIELDS = [
         "crop_type_id": 4,
         "irrigation_type_id": 1,
         "area": 10000.0,
-        "applied_irrigation": [{"timestamp": "2015-02-15 00:00Z", "volume": 23.0}],
+        "applied_irrigation": [
+            {"timestamp": "2015-02-15 00:00Z", "supplied_water_volume": 23.0}
+        ],
     },
     {
         "name": "Field with no irrigation log",
@@ -124,7 +126,9 @@ AIRA_DEMO_USER_INITIAL_AGRIFIELDS = [
         "crop_type_id": 4,
         "irrigation_type_id": 1,
         "area": 10000.0,
-        "applied_irrigation": [{"timestamp": "2014-02-15 00:00Z", "volume": 23.0}],
+        "applied_irrigation": [
+            {"timestamp": "2014-02-15 00:00Z", "supplied_water_volume": 23.0}
+        ],
     },
 ]
 
