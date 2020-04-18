@@ -27,10 +27,6 @@ aira.setupDateTimePickerForAppliedIrrigation = function () {
         todayBtn: true,
         pickerPosition: "bottom-left"
     });
-    $(document).ready(function() {
-        var label_inner = $("label[for='id_volume']").html()
-        $("label[for='id_volume']").html(label_inner + " (m³)")
-    });
 };
 
 aira.mapModule = (function namespace() {
