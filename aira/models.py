@@ -419,11 +419,11 @@ class AppliedIrrigation(models.Model):
 
     hydrometer_reading_start = models.FloatField(null=True, blank=True)
     hydrometer_reading_end = models.FloatField(null=True, blank=True)
-    hydrometer_water_percentage = models.FloatField(
+    hydrometer_water_percentage = models.PositiveSmallIntegerField(
         null=True,
         blank=True,
-        default=1,
-        validators=[MinValueValidator(0.0), MaxValueValidator(1.0)],
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
+        default=100,
     )
 
     @property

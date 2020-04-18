@@ -97,7 +97,7 @@ class AppliedIrrigationForm(forms.ModelForm):
             "supplied_flow_rate": _("Water flow during irrigation (m³/h)"),
             "hydrometer_reading_start": _("Hydrometer reading at the start"),
             "hydrometer_reading_end": _("Hydrometer reading at the end"),
-            "hydrometer_water_percentage": _("Percentage of water passing through"),
+            "hydrometer_water_percentage": _("Percentage of water passing through (%)"),
         }
 
     def clean(self):
