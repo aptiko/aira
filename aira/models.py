@@ -349,7 +349,7 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
         ).get_cached(dest, version=2)
         return dest
 
-    def get_latest_irrigation_defaults(self):
+    def get_latest_applied_irrigation_defaults(self):
         """
         Returns a dict of all default values from the history of AppliedIrrigations
         per this field. Note that some dict keys won't exist if no previous values.

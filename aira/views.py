@@ -283,7 +283,7 @@ class CreateAppliedIrrigationView(LoginRequiredMixin, CreateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        initial_values = self.agrifield.get_latest_irrigation_defaults()
+        initial_values = self.agrifield.get_latest_applied_irrigation_defaults()
         kwargs["initial"] = {**kwargs["initial"], **initial_values}
         return kwargs
 
