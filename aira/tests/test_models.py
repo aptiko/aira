@@ -257,22 +257,56 @@ class AgrifieldLatestAppliedIrrigationDefaultsTestCase(TestCase):
         self.assertEqual(defaults, expected_defaults)
 
 
-class IrrigationLogTestCase(TestCase):
-    # self.agrifield = mommy.make(Agrifield, use_custom_parameters=True, )
+class AppliedIrrigationTestCase(TestCase):
+    def setUp(self):
+        # Populate the rest to assure that the correct value is the one
+        # being used for calculation according to 'irrigation_type'
+        self.defaults = {
+            "supplied_water_volume": 100,
+            "supplied_duration": 100,
+            "supplied_flow_rate": 100,
+            "hydrometer_reading_start": 100,
+            "hydrometer_reading_end": 100,
+            "hydrometer_water_percentage": 100,
+        }
 
     def test_calculated_volume_supplied_water_volume(self):
-        pass
+        kwargs = {
+            **self.defaults,
+            "supplied_water_volume": 1337,
+        }
+        irrigation = mommy.make(
+            AppliedIrrigation, irrigation_type="VOLUME_OF_WATER", **kwargs,
+        )
+        self.assertEqual(irrigation.volume, 1337)
 
     def test_calculated_volume_supplied_duration(self):
-        pass
+        kwargs = {
+            **self.defaults,
+            "supplied_duration": 1337 * 60 * 2,
+            "supplied_flow_rate": 0.5,
+        }
+        irrigation = mommy.make(
+            AppliedIrrigation, irrigation_type="DURATION_OF_IRRIGATION", **kwargs
+        )
+        self.assertEqual(irrigation.volume, 1337)
 
     def test_calculated_volume_supplied_hydrometer_readings(self):
-        pass
+        kwargs = {
+            **self.defaults,
+            "hydrometer_reading_start": 1000,
+            "hydrometer_reading_end": 1000 + 1337 * 2,
+            "hydrometer_water_percentage": 50,
+        }
+        irrigation = mommy.make(
+            AppliedIrrigation, irrigation_type="HYDROMETER_READINGS", **kwargs
+        )
+        self.assertEqual(irrigation.volume, 1337)
 
     def test_calculated_volume_with_no_values_recorded(self):
-        # Test that None does not raise an error in calculation of duration.
-        pass
-
-    def test_system_default_volume_calculated_from_agrifield(self):
-        # Just assert the calculation
-        pass
+        types = ["VOLUME_OF_WATER", "DURATION_OF_IRRIGATION", "HYDROMETER_READINGS"]
+        for ir_type in types:
+            irrigation = mommy.make(
+                AppliedIrrigation, irrigation_type="DURATION_OF_IRRIGATION",
+            )
+            self.assertIsNone(irrigation.volume)
