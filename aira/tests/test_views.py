@@ -680,3 +680,8 @@ class IrrigationPerformanceCsvTestCase(DataTestCase):
         )
         value = float(m.group(1))
         self.assertAlmostEqual(value, 125.20833333)
+
+class CreateAppliedIrrigationViewTestCase(TestCase):
+    def test_applied_irrigation_defaults(self):
+        # Patch the get default, and assert it.
+        pass

@@ -212,9 +212,3 @@ class IrrigationLogTestCase(TestCase):
     def test_system_default_volume_calculated_from_agrifield(self):
         # Just assert the calculation
         pass
-
-
-class CreateAppliedIrrigationViewTestCase(TestCase):
-    def test_applied_irrigation_defaults(self):
-        # Patch the get default, and assert it.
-        pass
