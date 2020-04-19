@@ -681,7 +681,19 @@ class IrrigationPerformanceCsvTestCase(DataTestCase):
         value = float(m.group(1))
         self.assertAlmostEqual(value, 125.20833333)
 
+
 class CreateAppliedIrrigationViewTestCase(TestCase):
-    def test_applied_irrigation_defaults(self):
-        # Patch the get default, and assert it.
-        pass
+    @patch("aira.models.Agrifield.get_latest_applied_irrigation_defaults",)
+    def test_applied_irrigation_defaults(self, mock):
+        owner = User.objects.create_user(username="bob", password="topsecret")
+        self.client.login(username="bob", password="topsecret")
+        agrifield = mommy.make(Agrifield, owner=owner)
+
+        mock.return_value = {
+            "supplied_water_volume": 1337,
+            "irrigation_type": "HELLO_WORLD",
+        }
+        response = self.client.get(f"/create_irrigationlog/{agrifield.id}/")
+        initials = response.context["form"].initial
+        self.assertEqual(initials["supplied_water_volume"], 1337)
+        self.assertEqual(initials["irrigation_type"], "HELLO_WORLD")
