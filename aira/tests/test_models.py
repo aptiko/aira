@@ -179,3 +179,42 @@ class CropTypeMostRecentPlantingDateTestCase(TestCase):
         self.assertEqual(
             self.crop_type.most_recent_planting_date, dt.datetime(2018, 3, 15)
         )
+
+
+class AgrifieldLatestAppliedIrrigationDefaultsTestCase(AgrifieldTestCaseBase):
+    def test_no_applied_irrigations_present(self):
+        pass
+
+    def test_default_irrigation_type(self):
+        pass
+
+    def test_no_water_volume_default_present(self):
+        pass
+
+    def test_all_defaults_present(self):
+        pass
+
+
+class IrrigationLogTestCase(TestCase):
+    def test_calculated_volume_supplied_water_volume(self):
+        pass
+
+    def test_calculated_volume_supplied_duration(self):
+        pass
+
+    def test_calculated_volume_supplied_hydrometer_readings(self):
+        pass
+
+    def test_calculated_volume_with_no_values_recorded(self):
+        # Test that None does not raise an error in calculation of duration.
+        pass
+
+    def test_system_default_volume_calculated_from_agrifield(self):
+        # Just assert the calculation
+        pass
+
+
+class CreateAppliedIrrigationViewTestCase(TestCase):
+    def test_applied_irrigation_defaults(self):
+        # Patch the get default, and assert it.
+        pass
