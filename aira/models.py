@@ -445,11 +445,11 @@ class AppliedIrrigation(models.Model):
         try:
             # Wrapped in a try-except in case of null values exceptions
             if self.irrigation_type == "DURATION_OF_IRRIGATION":
-                return self.supplied_duration * self.supplied_flow_rate
+                return (self.supplied_duration / 60) * self.supplied_flow_rate
             elif self.irrigation_type == "HYDROMETER_READINGS":
-                return (
-                    self.hydrometer_reading_end - self.hydrometer_reading_start
-                ) * self.hydrometer_water_percentage
+                return (self.hydrometer_reading_end - self.hydrometer_reading_start) * (
+                    self.hydrometer_water_percentage / 100
+                )
         except TypeError:
             return None
 
