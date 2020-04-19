@@ -426,10 +426,16 @@ class AppliedIrrigation(models.Model):
     supplied_duration = models.PositiveIntegerField(
         "Duration in minutes", null=True, blank=True
     )
-    supplied_flow_rate = models.FloatField("Flow rate (m3/h)", null=True, blank=True)
+    supplied_flow_rate = models.FloatField(
+        "Flow rate (m3/h)", null=True, blank=True, validators=[MinValueValidator(0.0)]
+    )
 
-    hydrometer_reading_start = models.FloatField(null=True, blank=True)
-    hydrometer_reading_end = models.FloatField(null=True, blank=True)
+    hydrometer_reading_start = models.FloatField(
+        null=True, blank=True, validators=[MinValueValidator(0.0)]
+    )
+    hydrometer_reading_end = models.FloatField(
+        null=True, blank=True, validators=[MinValueValidator(0.0)]
+    )
     hydrometer_water_percentage = models.PositiveSmallIntegerField(
         null=True,
         blank=True,
