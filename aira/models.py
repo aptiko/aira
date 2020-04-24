@@ -349,23 +349,16 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
         ).get_cached(dest, version=2)
         return dest
 
-    def get_latest_applied_irrigation_defaults(self):
-        """
-        Returns a dict of all default values from the history of AppliedIrrigations
-        per this field. Note that some dict keys won't exist if no previous values.
-        """
-        initial = {}
-        irrigations = self.appliedirrigation_set.all()
-        try:
-            # Set the default irrigation type to the latest.
-            initial.update({"irrigation_type": irrigations.latest().irrigation_type})
-        except AppliedIrrigation.DoesNotExist:
-            return {}
+    def _get_latest_irrigation_paramaters(self):
+        # Returns the latest paramater values for each irrigation
+        # type according to its latest entry (if available)
 
-        # Update default values of each type according to its latest entry (if any)
+        latest_values = {}
+        irrigations = self.appliedirrigation_set.all()
+
         try:
             volume_irr = irrigations.filter(irrigation_type="VOLUME_OF_WATER").latest()
-            initial.update({"supplied_water_volume": volume_irr.supplied_water_volume})
+            latest_values["supplied_water_volume"] = volume_irr.supplied_water_volume
         except AppliedIrrigation.DoesNotExist:
             pass
 
@@ -373,12 +366,8 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
             duration_irr = irrigations.filter(
                 irrigation_type="DURATION_OF_IRRIGATION"
             ).latest()
-            initial.update(
-                {
-                    "supplied_duration": duration_irr.supplied_duration,
-                    "supplied_flow_rate": duration_irr.supplied_flow_rate,
-                }
-            )
+            latest_values["supplied_duration"] = duration_irr.supplied_duration
+            latest_values["supplied_flow_rate"] = duration_irr.supplied_flow_rate
         except AppliedIrrigation.DoesNotExist:
             pass
 
@@ -386,16 +375,31 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
             hydro_irr = irrigations.filter(
                 irrigation_type="HYDROMETER_READINGS"
             ).latest()
-            # Split into its own variable to accommodate breakline (max-line-length)
-            initial_fields = {
-                "hydrometer_water_percentage": hydro_irr.hydrometer_water_percentage,
-                "hydrometer_reading_start": hydro_irr.hydrometer_reading_end,
-            }
-            initial.update(initial_fields)
+            latest_values[
+                "hydrometer_water_percentage"
+            ] = hydro_irr.hydrometer_water_percentage
+            latest_values["hydrometer_reading_start"] = hydro_irr.hydrometer_reading_end
         except AppliedIrrigation.DoesNotExist:
             pass
 
-        return initial
+        return latest_values
+
+    def get_latest_applied_irrigation_defaults(self):
+        """
+        Returns a dict of all default values from the history of AppliedIrrigations
+        per this field. Note that some dict keys won't exist if no previous values.
+        """
+
+        try:
+            # Set the default irrigation type to the latest.
+            irrigation_type = self.appliedirrigation_set.latest().irrigation_type
+        except AppliedIrrigation.DoesNotExist:
+            return {}
+
+        return {
+            **self._get_latest_irrigation_paramaters(),
+            "irrigation_type": irrigation_type,
+        }
 
     def _delete_cached_point_timeseries(self):
         filenamesglob = os.path.join(
