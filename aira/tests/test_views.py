@@ -1260,3 +1260,55 @@ class AgrifieldsMapPopupTestCase(SeleniumDataTestCase):
         self.map_marker.click()
         self.popup_element.wait_until_exists()
         self.assertTrue(self.popup_element.is_displayed())
+
+
+class CreateTelemetricFlowmeterViewTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            id=55, username="bob", password="topsecret"
+        )
+        self.client.login(username="bob", password="topsecret")
+        self.post_data = {
+            "flowmeter_type": "LoRA_ARTA",
+            "LoRA_ARTA-device_id": "123",
+            "LoRA_ARTA-flowmeter_water_percentage": 50,
+            "LoRA_ARTA-conversion_rate": 8,
+            "LoRA_ARTA-report_frequency_in_minutes": 15,
+        }
+
+    def test_create_flowmeter(self):
+        agrifield = mommy.make(Agrifield, id=1337, owner=self.user)
+
+        self.assertFalse(hasattr(agrifield, "lora_artaflowmeter"))
+        response = self.client.post(
+            "/create_telemetric_flowmeter/1337/", data=self.post_data
+        )
+        self.assertEqual(response.status_code, 302)
+        agrifield = Agrifield.objects.get(id=agrifield.id)
+        self.assertTrue(hasattr(agrifield, "lora_artaflowmeter"))
+
+        created_flowmeter = agrifield.lora_artaflowmeter
+        self.assertEqual(created_flowmeter.device_id, "123"),
+        self.assertEqual(created_flowmeter.flowmeter_water_percentage, 50),
+        self.assertEqual(created_flowmeter.conversion_rate, 8),
+        self.assertEqual(created_flowmeter.report_frequency_in_minutes, 15),
+
+    def test_create_flowmeter_non_existing_agrifield(self):
+        response = self.client.post(
+            "/create_telemetric_flowmeter/1337/", data=self.post_data
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_create_flowmeter_non_owned_agrifield(self):
+        mommy.make(Agrifield, id=1337)
+        response = self.client.post(
+            "/create_telemetric_flowmeter/1337/", data=self.post_data
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_js_visibility(self):
+        # TODO: Testing multiple choices requires other forms,
+        # mocking these along with models
+
+        # Also:: best approach? selenium?
+        pass

@@ -3,6 +3,7 @@ import datetime as dt
 import math
 import os
 from collections import OrderedDict
+from decimal import Decimal
 from glob import iglob
 from io import StringIO
 
@@ -12,6 +13,7 @@ from django.contrib.gis.db import models
 from django.core.cache import cache
 from django.core.files.storage import FileSystemStorage
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db.models import Q, UniqueConstraint
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.http import Http404
@@ -489,6 +491,10 @@ class AppliedIrrigation(models.Model):
     irrigation_type = models.CharField(
         max_length=50, choices=IRRIGATION_TYPES, default="VOLUME_OF_WATER"
     )
+    is_automatically_reported = models.BooleanField(
+        verbose_name=_("Is automatically added by a flowmeter integration"),
+        default=False,
+    )
     agrifield = models.ForeignKey(Agrifield, on_delete=models.CASCADE)
     timestamp = models.DateTimeField()
 
@@ -544,6 +550,14 @@ class AppliedIrrigation(models.Model):
     class Meta:
         get_latest_by = "timestamp"
         ordering = ("-timestamp",)
+        # For automated reporting, avoid duplicated data points.
+        constraints = [
+            UniqueConstraint(
+                fields=["supplied_water_volume", "timestamp", "agrifield"],
+                condition=Q(is_automatically_reported=True),
+                name="unique_automatic_flowmeter_irrigations",
+            )
+        ]
 
     def __str__(self):
         return str(self.timestamp)
@@ -555,3 +569,54 @@ class AppliedIrrigation(models.Model):
     def delete(self, *args, **kwargs):
         super().delete(*args, **kwargs)
         self.agrifield._queue_for_calculation()
+
+
+class TelemetricFlowmeter(models.Model):
+    agrifield = models.OneToOneField(Agrifield, on_delete=models.CASCADE)
+
+    class Meta:
+        abstract = True
+
+
+class LoRA_ARTAFlowmeter(TelemetricFlowmeter):
+    device_id = models.CharField(max_length=100)
+    flowmeter_water_percentage = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
+        help_text=_("Percentage of water that corresponds to the flowmeter (%)"),
+    )
+    conversion_rate = models.DecimalField(
+        max_digits=5, decimal_places=2, default=Decimal("6.8")
+    )
+    report_frequency_in_minutes = models.PositiveSmallIntegerField(default=5)
+
+    def _calculate_water_volume(self, sensor_frequency):
+        return (
+            Decimal(self.flowmeter_water_percentage / 100)
+            * self.report_frequency_in_minutes
+            * sensor_frequency
+            / self.conversion_rate
+        )
+
+    def create_irrigations_in_bulk(self, data_points):
+        kwargs_list = [
+            {
+                "is_automatically_reported": True,
+                "irrigation_type": "VOLUME_OF_WATER",
+                "supplied_water_volume": self._calculate_water_volume(
+                    point["sensor_frequency"]
+                ),
+                "agrifield_id": self.agrifield_id,
+                "timestamp": point["timestamp"],
+            }
+            for point in data_points
+        ]
+
+        """
+        NOTE: Using `ignore_conflicts` in case TTN reports duplicate data points either
+        as a problem on their side, or ours. So with a `unique_together` constraint
+        on volume, timestamp, and agrifield, we can skip such points if they appear.
+        """
+        AppliedIrrigation.objects.bulk_create(
+            [AppliedIrrigation(**kwargs) for kwargs in kwargs_list],
+            ignore_conflicts=True,
+        )

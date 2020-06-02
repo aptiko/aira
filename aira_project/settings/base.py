@@ -151,3 +151,6 @@ if os.environ.get("SELENIUM_BROWSER", False):
             "kwargs": {},
         }
     }
+
+THE_THINGS_NETWORK_ACCESS_KEY = os.environ.get("DJANGO_THE_THINGS_NETWORK_ACCESS_KEY")
+THE_THINGS_NETWORK_QUERY_URL = os.environ.get("THE_THINGS_NETWORK_QUERY_URL")

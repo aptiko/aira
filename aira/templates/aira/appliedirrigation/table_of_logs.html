@@ -9,6 +9,7 @@
         <th></th>
         <th>{% trans "Date" %}</th>
         <th>{% trans "Applied water" %} (m³)</th>
+        <th>{% trans "Automatically reported?" %}</th>
         <th></th>
       </tr>
     </thead>
@@ -18,10 +19,11 @@
           <td>{{ applied_irrigation.id }}</td>
           <td><a id="link-update-applied-irrigation-{{ applied_irrigation.id }}" href="{% url 'applied-irrigation-update' agrifield.owner.username agrifield.id applied_irrigation.id %}">{{applied_irrigation.timestamp}}</a></td>
           <td align="center">{{applied_irrigation.volume|floatformat:"2"}}</td>
+          <td align="center"> {{ applied_irrigation.is_automatically_reported|yesno:"✔,✘" }} </td>
           {% if user.username != "demo" %}
             <td><a id="link-delete-applied-irrigation-{{ applied_irrigation.id }}" href="{% url 'applied-irrigation-delete' agrifield.owner.username agrifield.id applied_irrigation.id %}">{% trans "Delete" %} </a></td>
           {% else %}
-            <td -</td>
+            <td></td>
           {% endif %}
         </tr>
       {% endfor %}

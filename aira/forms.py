@@ -8,7 +8,7 @@ from captcha.fields import CaptchaField
 from geowidgets import LatLonField
 from registration.forms import RegistrationFormTermsOfService
 
-from .models import Agrifield, AppliedIrrigation, Profile
+from .models import Agrifield, AppliedIrrigation, LoRA_ARTAFlowmeter, Profile
 
 
 class ProfileForm(forms.ModelForm):
@@ -159,7 +159,7 @@ class AppliedIrrigationForm(forms.ModelForm):
 
     class Meta:
         model = AppliedIrrigation
-        exclude = ("agrifield",)
+        exclude = ("agrifield", "is_automatically_reported")
         labels = {
             "timestamp": _("Date and time (YYYY-MM-DD HH:mm:ss) "),
             "supplied_water_volume": _("Volume of applied irrigation water (m³)"),
@@ -193,6 +193,17 @@ class AppliedIrrigationForm(forms.ModelForm):
         for field in fields:
             if self.cleaned_data.get(field, None) is None:
                 self.add_error(field, _("This field is required."))
+
+
+class LoRA_ARTAFlowmeterForm(forms.ModelForm):
+    class Meta:
+        model = LoRA_ARTAFlowmeter
+        fields = [
+            "device_id",
+            "flowmeter_water_percentage",
+            "conversion_rate",
+            "report_frequency_in_minutes",
+        ]
 
 
 class MyRegistrationForm(RegistrationFormTermsOfService):

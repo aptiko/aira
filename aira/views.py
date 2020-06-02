@@ -7,9 +7,16 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
-from django.http import FileResponse, Http404, HttpResponse, HttpResponseRedirect
+from django.http import (
+    FileResponse,
+    Http404,
+    HttpResponse,
+    HttpResponseRedirect,
+    HttpResponseServerError,
+)
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic.base import RedirectView, TemplateView, View
 from django.views.generic.detail import DetailView
@@ -18,7 +25,7 @@ from django.views.generic.list import ListView
 
 import pandas as pd
 
-from .forms import AgrifieldForm, AppliedIrrigationForm
+from .forms import AgrifieldForm, AppliedIrrigationForm, LoRA_ARTAFlowmeterForm
 from .models import Agrifield, AppliedIrrigation, Profile
 
 
@@ -265,9 +272,8 @@ class AppliedIrrigationsView(CheckUsernameMixin, LoginRequiredMixin, CreateView)
         return reverse("agrifield-list", kwargs={"username": field.owner})
 
     def form_valid(self, form):
-        form.instance.agrifield = Agrifield.objects.get(
-            pk=self.kwargs.get("agrifield_id")
-        )
+        form.instance.agrifield = Agrifield.objects.get(pk=self.kwargs["pk"])
+        form.instance.is_automatically_reported = False
         return super().form_valid(form)
 
     def dispatch(self, request, *args, **kwargs):
@@ -290,6 +296,11 @@ class AppliedIrrigationsView(CheckUsernameMixin, LoginRequiredMixin, CreateView)
 class AppliedIrrigationViewMixin:
     model = AppliedIrrigation
     form_class = AppliedIrrigationForm
+    template_name_suffix = "/update"
+
+    def form_valid(self, form):
+        form.instance.is_automatically_reported = False
+        return super().form_valid(form)
 
     def get_object(self):
         applied_irrigation = super().get_object()
@@ -364,3 +375,74 @@ class DownloadSoilAnalysisView(CheckUsernameMixin, LoginRequiredMixin, View):
         if not agrifield.soil_analysis:
             raise Http404
         return FileResponse(agrifield.soil_analysis, as_attachment=True)
+
+
+class CreateTelemetricFlowmeterView(LoginRequiredMixin, CreateView):
+    """
+    A create view that supports multiple models (and thus forms), the selection
+    of which type to be created is handled on the client side.
+
+    The overridden methods ensure that the context will be properly passed with form
+    instances maintaining their respective kwargs, so in case a submission fails,
+    the form validation errors are displayed, and the form type becomes pre-selected.
+    """
+
+    template_name = "aira/create_telemetricflowmeter/main.html"
+    FLOWMETER_TYPES = [
+        {
+            "value": "LoRA_ARTA",
+            "form_class": LoRA_ARTAFlowmeterForm,
+            "display": "LoRA_ARTA",
+        }
+    ]
+
+    @cached_property
+    def agrifield(self):
+        user_agrifields = Agrifield.objects.filter(owner=self.request.user)
+        return get_object_or_404(user_agrifields, pk=self.kwargs["agrifield_pk"])
+
+    def _get_form_instance(self):
+        # Returns the form that should be used according to the submitted type.
+        for flowmeter_type in self.FLOWMETER_TYPES:
+            if flowmeter_type["value"] == self.request.POST["flowmeter_type"]:
+                form_kwargs = {
+                    **self.get_form_kwargs(),
+                    "prefix": flowmeter_type["value"],
+                }
+                return flowmeter_type["form_class"](**form_kwargs)
+        raise HttpResponseServerError("No form was submitted correctly.")
+
+    def get_form(self, form_class=None):
+        # NOTE: If it's a GET request, the method is not called because
+        # `get_context_data` is overridden, so `None` return is fine.
+        if self.request.method == "POST":
+            return self._get_form_instance()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Append the form instances to the flowmeter_types to be rendered.
+        flowmeter_types_with_forms = [
+            {**d, "form": d["form_class"](prefix=d["value"]), "selected": False}
+            for d in self.FLOWMETER_TYPES
+        ]
+
+        # This is in case the POST was not successful, make it pre-selected
+        # and preserve the form kwargs to display any validation errors.
+        if self.request.method == "POST":
+            for ft in flowmeter_types_with_forms:
+                if self.request.POST["flowmeter_type"] == ft["value"]:
+                    ft["form"] = context["form"]
+                    ft["selected"] = True
+
+        return {
+            **context,
+            "agrifield": self.agrifield,
+            "flowmeter_types": flowmeter_types_with_forms,
+        }
+
+    def form_valid(self, form):
+        form.instance.agrifield = self.agrifield
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("agrifield-list", kwargs={"username": self.agrifield.owner})

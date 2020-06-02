@@ -1,0 +1,37 @@
+<form class="form-horizontal">
+    <div class="form-group">
+      <label class="control-label" for="flowmeter_type-dropdown">Choose flowmeter type</label>
+      <select id="flowmeter_type-dropdown" class="form-control">
+        {% for flowmeter_type in flowmeter_types %}
+        <option
+        value="{{ flowmeter_type.value }}"
+        {% if flowmeter_type.selected %} selected {% endif %}
+        >
+        {{ flowmeter_type.display }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+</form>
+
+{% block extrajs %}
+  <script type="text/javascript">
+    // TODO: Move into proper JS file
+    window.addEventListener("load", function(){
+      function onFlowmeterTypeChange() {
+        const selectedType = document.querySelector(
+          '#flowmeter_type-dropdown > option:checked'
+        ).value;
+        const selectedFormID = `${selectedType}-form`;
+        document.querySelectorAll('#forms-section > form').forEach((form) => {
+          form.style.display = form.id === selectedFormID? 'block': 'none';
+        });
+      }
+
+      document
+        .getElementById('flowmeter_type-dropdown')
+        .addEventListener('change', onFlowmeterTypeChange);
+      onFlowmeterTypeChange();
+    }, false);
+  </script>
+{% endblock %}

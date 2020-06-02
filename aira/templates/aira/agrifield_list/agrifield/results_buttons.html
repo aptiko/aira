@@ -4,6 +4,9 @@
   <a id="btn-applied-irrigations-{{ f.id }}" class="btn btn-success" href="{% url 'applied-irrigations' username=f.owner.username agrifield_id=f.id %}">
     {% trans "Irrigations applied" %}
   </a>
+  <a id="btn-telemetry" class="btn btn-success" href="{% url 'create_telemetric_flowmeter' agrifield_pk=f.id %}">
+    {% trans "Telemetry" %}
+  </a>
   <a id="btn-agrifield-report-{{ f.id }}" class="btn btn-success" href="{% url 'agrifield-report' f.owner.username f.id %}">
     {% trans "Irrigation report" %}
   </a>

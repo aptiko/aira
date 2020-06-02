@@ -1,0 +1,38 @@
+{% extends 'aira/base/main.html' %}
+{% load i18n %}
+
+{% load bootstrap3 %}
+{% block title %} {{ user }} {% endblock %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <h3>{% trans "Telemetry" %} </h3>
+        <hr>
+        <!-- This is used to do client side form selection (show/hide using css) -->
+        {% include "./flowmeter_type_dropdown.html" %}
+        <br>
+
+        <div id="forms-section">
+          {% for flowmeter_type in flowmeter_types %}
+          <form method="post" role="form" id="{{ flowmeter_type.value }}-form" class="form-horizontal" style="display: none;">
+            {% csrf_token %}
+            <input type="hidden" name="flowmeter_type" value="{{ flowmeter_type.value }}">
+            {% bootstrap_form flowmeter_type.form %}
+            {% buttons %}
+              {% if user.username != "demo" %}
+                <div class="col-sm-offset-2 col-sm-10">
+                  <button type="submit" class="btn btn-success btn-xs">{% trans "Add" %}</button>
+                  <a class="btn btn-success btn-xs" href="{% url 'agrifield-list' username=agrifield.owner.username %}"> {% trans "Back" %} </a>
+                </div>
+              {% endif %}
+            {% endbuttons %}
+          </form>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="col-md-1">
+      </div>
+  </div>
+{% endblock %}
