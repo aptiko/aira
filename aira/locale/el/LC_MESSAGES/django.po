@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-24 13:42+0300\n"
+"POT-Creation-Date: 2020-09-30 11:35+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -624,15 +624,15 @@ msgid "Weather history"
 msgstr "Ιστορικό καιρού"
 
 #: aira/templates/aira/home/agrifields_list/agrifield_results_buttons.html:18
-msgid "Temperature"
-msgstr "Θερμοκρασία"
+msgid "Air temperature"
+msgstr "Θερμοκρασία αέρα"
 
 #: aira/templates/aira/home/agrifields_list/agrifield_results_buttons.html:19
-msgid "Humidity"
-msgstr "Υγρασία"
+msgid "Relative humidity"
+msgstr "Σχετική υγρασία"
 
 #: aira/templates/aira/home/agrifields_list/agrifield_results_buttons.html:20
-msgid "Precipitation"
+msgid "Rainfall"
 msgstr "Βροχόπτωση"
 
 #: aira/templates/aira/home/agrifields_list/agrifield_results_buttons.html:21
@@ -644,8 +644,8 @@ msgid "Wind speed"
 msgstr "Ταχύτητα ανέμου"
 
 #: aira/templates/aira/home/agrifields_list/agrifield_results_buttons.html:23
-msgid "Calculated evaporation"
-msgstr "Υπολογισμένη εξατμισοδιαπνοή"
+msgid "Reference evapotranspiration"
+msgstr "Εξατμισοδιαπνοή αναφοράς"
 
 #: aira/templates/aira/home/agrifields_list/agrifield_results_recommendation.html:3
 msgid "Apply one of these alternatives:"
@@ -952,15 +952,3 @@ msgstr "Εγγραφή"
 #: aira/views.py:56
 msgid "N/A"
 msgstr ""
-
-#~ msgid "I want to specify the volume of water"
-#~ msgstr "Θέλω να προσδιορίσω όγκο νερού άρδευσης"
-
-#~ msgid "I want to specify the duration of irrigation"
-#~ msgstr "Θέλω να προσδιορίσω τη διάρκεια άρδευσης"
-
-#~ msgid "I want to register the flowmeter readings"
-#~ msgstr "Θέλω να καταχωρίσω ενδείξεις υδρομέτρου"
-
-#~ msgid "Click on the map to get values"
-#~ msgstr "Κάντε κλικ στο χάρτη για να δείτε τιμές"
