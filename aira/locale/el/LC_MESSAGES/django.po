@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-30 11:35+0300\n"
+"POT-Creation-Date: 2020-09-30 12:04+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -540,8 +540,8 @@ msgid "Daily rainfall"
 msgstr "Ημερήσια βροχόπτωση"
 
 #: aira/templates/aira/frontpage/map_heading.html:24
-msgid "Daily potential evapotranspiration"
-msgstr "Ημερήσια δυνητική εξατμισοδιαπνοή"
+msgid "Daily reference evapotranspiration"
+msgstr "Ημερήσια εξατμισοδιαπνοή αναφοράς"
 
 #: aira/templates/aira/frontpage/map_heading.html:25
 msgid "Daily humidity"
@@ -560,8 +560,8 @@ msgid "Daily solar radiation"
 msgstr "Μέση ημερήσια ηλιακή ακτινοβολία"
 
 #: aira/templates/aira/frontpage/map_heading.html:34
-msgid "Monthly potential evapotranspiration"
-msgstr "Μηνιαία δυνητική εξατμισοδιαπνοή"
+msgid "Monthly reference evapotranspiration"
+msgstr "Μηνιαία εξατμισοδιαπνοή αναφοράς"
 
 #: aira/templates/aira/home/agrifields_list/add_remove_agrifields.html:5
 msgid "Fields"
