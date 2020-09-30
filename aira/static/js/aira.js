@@ -209,6 +209,7 @@ aira.meteoMapPanel = {
       format: 'image/png',
       transparent: true,
       opacity: 0.65,
+      zIndex: 100,
     });
     this.currentMeteoLayer.addTo(aira.map.leafletMap);
   },
