@@ -34,6 +34,10 @@ class RegistrationFormTestCase(TestCase):
             "150",  # "150 characters or less..."
         )
 
+    def test_registration_form_requires_agreement_to_tos(self):
+        r = self.client.get("/accounts/register/")
+        self.assertContains(r, "I have read and agree to the Terms of Service")
+
 
 class AppliedIrrigationFormTestCase(TestCase):
     def setUp(self):
