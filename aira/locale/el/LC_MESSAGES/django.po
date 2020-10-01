@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-30 14:01+0300\n"
+"POT-Creation-Date: 2020-10-01 14:21+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -210,9 +210,13 @@ msgstr "Ποσοστό νερού που αντιστοιχεί στο υδρό�
 msgid "This field is required."
 msgstr "Αυτό το πεδίο πρέπει να έχει τιμή."
 
-#: aira/forms.py:204
+#: aira/forms.py:199
 msgid "Are you human?"
 msgstr "Είστε άνθρωπος;"
+
+#: aira/forms.py:204
+msgid "150 characters or fewer. Letters, digits and @/./+/-/_ only."
+msgstr "150 ή λιγότεροι χαρακτήρες. Μόνο γράμματα, ψηφία και @/./+/-/_."
 
 #: aira/management/commands/send_notifications.py:74
 msgid "Irrigation status for user {}"

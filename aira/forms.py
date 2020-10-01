@@ -196,9 +196,10 @@ class AppliedIrrigationForm(forms.ModelForm):
 
 
 class MyRegistrationForm(RegistrationForm):
-
-    """
-    Extension of the default registration form to include a captcha
-    """
-
     captcha = CaptchaField(label=_("Are you human?"))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["username"].help_text = _(
+            "150 characters or fewer. Letters, digits and @/./+/-/_ only."
+        )

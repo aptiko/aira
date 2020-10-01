@@ -542,6 +542,21 @@ class RemoveSupervisedUserTestCase(DataTestCase):
         self.assertEqual(response.status_code, 404)
 
 
+class RegistrationViewTestCase(TestCase):
+    def test_template_is_overriden(self):
+        """Test that the correct template is used.
+
+        In INSTALLED_APPS, "aira" has to go before "registration" (which has to go
+        before "django.contrib.admin"), so that the registration templates are read from
+        aira/templates/registration and not from django-registration-redux. This is easy
+        to misconfigure, so we test it here.
+        """
+        response = self.client.get("/accounts/register/")
+        # Check the title. django-registration-redux's default is "Register for an
+        # account"
+        self.assertContains(response, "<title>Registration —")
+
+
 class ProfileViewsTestCase(TestCase):
     def setUp(self):
         self.bob = User.objects.create_user(id=55, username="bob", password="topsecret")
