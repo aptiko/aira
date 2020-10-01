@@ -529,8 +529,8 @@ msgid "Switch to monthly"
 msgstr "Μετάβαση σε μηνιαίο βήμα"
 
 #: aira/templates/aira/frontpage/map_heading.html:6
-msgid "View historical available data"
-msgstr "Διαθέσιμα ιστορικά δεδομένα"
+msgid "Climate data"
+msgstr "Κλιματικά δεδομένα"
 
 #: aira/templates/aira/frontpage/map_heading.html:7
 msgid "Time period"
