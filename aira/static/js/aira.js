@@ -149,7 +149,7 @@ aira.meteoMapPanel = {
   get activeTimestep() { return this.timestepToggle.getAttribute('current-timestep'); },
   get otherTimestep() { return this.activeTimestep === 'daily' ? 'monthly' : 'daily'; },
   get dateFormat() { return this.activeTimestep === 'daily' ? 'YYYY-MM-DD' : 'YYYY-MM'; },
-  get activeDate() { return this.dateSelector.value; },
+  get activeDate() { return document.getElementById('current-date').textContent; },
   get mapserverSubdir() { return this.activeTimestep === 'daily' ? 'historical/' : 'historical/monthly'; },
   get mapserverUrl() {
     let result = aira.mapserverBaseUrl + this.mapserverSubdir;
