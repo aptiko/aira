@@ -146,10 +146,8 @@ class AgrifieldListView(LoginRequiredMixin, TemplateView):
             # For Profile section
             # Select self.request.user user that set him supervisor
             if Profile.objects.filter(supervisor=self.request.user).exists():
-                supervising_users = User.objects.filter(
-                    profile__supervisor=self.request.user
-                )
-                context["supervising_users"] = supervising_users
+                supervisees = User.objects.filter(profile__supervisor=self.request.user)
+                context["supervisees"] = supervisees
 
             context["agrifields"] = agrifields
             context["fields_count"] = len(agrifields)
@@ -316,17 +314,17 @@ class DeleteAppliedIrrigationView(LoginRequiredMixin, DeleteView):
         return reverse("home", kwargs={"username": self.object.agrifield.owner})
 
 
-def remove_supervised_user_from_user_list(request):
+def remove_supervisee_from_user_list(request):
     if request.method == "POST":
         try:
-            supervised_profile = Profile.objects.get(
-                user_id=int(request.POST.get("supervised_user_id")),
+            supervisee_profile = Profile.objects.get(
+                user_id=int(request.POST.get("supervisee_id")),
                 supervisor=request.user,
             )
         except (TypeError, ValueError, Profile.DoesNotExist):
             raise Http404
-        supervised_profile.supervisor = None
-        supervised_profile.save()
+        supervisee_profile.supervisor = None
+        supervisee_profile.save()
         return HttpResponseRedirect(reverse("home"))
     else:
         raise Http404

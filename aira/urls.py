@@ -78,8 +78,8 @@ urlpatterns = [
         name="performance_csv",
     ),
     path(
-        "supervised_user/remove/",
-        views.remove_supervised_user_from_user_list,
-        name="supervised_user_remove",
+        "supervisee/remove/",
+        views.remove_supervisee_from_user_list,
+        name="supervisee_remove",
     ),
 ]

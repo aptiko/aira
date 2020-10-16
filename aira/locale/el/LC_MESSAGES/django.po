@@ -714,7 +714,7 @@ msgid "The following users have set you as their supervisor"
 msgstr "Οι παρακάτω χρήστες σάς έχουν ορίσει επιτηρητή τους"
 
 #: aira/templates/aira/home/profile_info.html:27
-msgid "Remove supervised user"
+msgid "Remove supervisee"
 msgstr "Διαγραφή χρήστη από επιτηρούμενο"
 
 #: aira/templates/aira/performance_chart/main.html:17

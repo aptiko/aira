@@ -77,7 +77,7 @@ class Profile(models.Model):
     class Meta:
         verbose_name_plural = "Profiles"
 
-    def get_supervised(self):
+    def get_supervisee(self):
         return Profile.objects.filter(supervisor=self.user)
 
     def __str__(self):

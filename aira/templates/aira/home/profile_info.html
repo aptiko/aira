@@ -11,20 +11,20 @@
           <strong>{% trans "Frequency of email notifications" %}:</strong> <a href="{% url 'update_profile' profile.id %}">{{ user.profile.get_notification_display|default:not_set }}</a> <br>
           <strong>{% trans "Your account supervisor" %}:</strong> <a href="{% url 'update_profile' profile.id %}">{{ user.profile.supervisor|default:not_set }}</a>
         </div>
-        {% if supervising_users %}
+        {% if supervisees %}
           <div class="col-md-7">
             <strong>{% trans "The following users have set you as their supervisor" %}</strong>: <br>
-            {% for supervised_user in  supervising_users %}
-              <form method="post" class="form-inline" action="{% url "supervised_user_remove" %}">
+            {% for supervisee in supervisees %}
+              <form method="post" class="form-inline" action="{% url "supervisee_remove" %}">
                 {% csrf_token %}
-                <a href="{% url 'home' supervised_user %}">
-                    {{ supervised_user }}
-                    {% if supervised_user.profile %}({{ supervised_user.profile.first_name }} {{ supervised_user.profile.last_name }}){% endif %}
+                <a href="{% url 'home' supervisee %}">
+                    {{ supervisee }}
+                    {% if supervisee.profile %}({{ supervisee.profile.first_name }} {{ supervisee.profile.last_name }}){% endif %}
                   </a>
-                <input type="hidden" name="supervised_user_id" value="{{ supervised_user.id }}">
+                <input type="hidden" name="supervisee_id" value="{{ supervisee.id }}">
                 <input type="submit"
                         value="x"
-                        data-toggle="tooltip" data-placement="bottom" title="{% trans 'Remove supervised user' %}"
+                        data-toggle="tooltip" data-placement="bottom" title="{% trans 'Remove supervisee' %}"
                         class="btn btn-xs btn-danger"
                         >
               </form>

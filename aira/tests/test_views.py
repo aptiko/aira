@@ -475,7 +475,7 @@ class RecommendationViewTestCase(DataTestCase):
         )
 
 
-class RemoveSupervisedUserTestCase(DataTestCase):
+class RemoveSuperviseeTestCase(DataTestCase):
     def setUp(self):
         super().setUp()
         # Note: we give specific ids below to the users, to ensure the general case,
@@ -491,25 +491,23 @@ class RemoveSupervisedUserTestCase(DataTestCase):
             id=57, username="david", password="topsecret"
         )
 
-    def test_supervised_users_list_contains_charlie(self):
+    def test_supervisee_list_contains_charlie(self):
         self.client.login(username="bob", password="topsecret")
         response = self.client.get("/home/")
         self.assertContains(
             response, '<a href="/home/charlie/">charlie (Charlie Clark)</a>', html=True
         )
 
-    def test_remove_charlie_from_supervised(self):
+    def test_remove_charlie_from_supervisees(self):
         assert User.objects.get(username="charlie").profile.supervisor is not None
         self.client.login(username="bob", password="topsecret")
-        response = self.client.post(
-            "/supervised_user/remove/", data={"supervised_user_id": "56"}
-        )
+        response = self.client.post("/supervisee/remove/", data={"supervisee_id": "56"})
         self.assertEqual(response.status_code, 302)
         self.assertIsNone(User.objects.get(username="charlie").profile.supervisor)
 
     def test_attempting_to_remove_charlie_when_not_logged_in_returns_404(self):
         response = self.client.post(
-            "/supervised_user/remove/", data={"supervised_user_id": self.charlie.id}
+            "/supervisee/remove/", data={"supervisee_id": self.charlie.id}
         )
         self.assertEqual(response.status_code, 404)
         self.assertIsNotNone(User.objects.get(username="charlie").profile.supervisor)
@@ -517,7 +515,7 @@ class RemoveSupervisedUserTestCase(DataTestCase):
     def test_attempting_to_remove_charlie_when_logged_in_as_david_returns_404(self):
         self.client.login(username="david", password="topsecret")
         response = self.client.post(
-            "/supervised_user/remove/", data={"supervised_user_id": self.charlie.id}
+            "/supervisee/remove/", data={"supervisee_id": self.charlie.id}
         )
         self.assertEqual(response.status_code, 404)
         self.assertIsNotNone(User.objects.get(username="charlie").profile.supervisor)
@@ -525,20 +523,20 @@ class RemoveSupervisedUserTestCase(DataTestCase):
     def test_attempting_to_remove_when_already_removed_returns_404(self):
         self.client.login(username="bob", password="topsecret")
         response = self.client.post(
-            "/supervised_user/remove/", data={"supervised_user_id": self.david.id}
+            "/supervisee/remove/", data={"supervisee_id": self.david.id}
         )
         self.assertEqual(response.status_code, 404)
 
     def test_attempting_to_remove_garbage_id_returns_404(self):
         self.client.login(username="bob", password="topsecret")
         response = self.client.post(
-            "/supervised_user/remove/", data={"supervised_user_id": "garbage"}
+            "/supervisee/remove/", data={"supervisee_id": "garbage"}
         )
         self.assertEqual(response.status_code, 404)
 
     def test_posting_without_parameters_returns_404(self):
         self.client.login(username="bob", password="topsecret")
-        response = self.client.post("/supervised_user/remove/")
+        response = self.client.post("/supervisee/remove/")
         self.assertEqual(response.status_code, 404)
 
 
