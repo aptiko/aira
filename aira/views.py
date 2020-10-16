@@ -14,6 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic.base import TemplateView, View
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.views.generic.list import ListView
 
 import pandas as pd
 
@@ -143,12 +144,6 @@ class AgrifieldListView(LoginRequiredMixin, TemplateView):
             for f in agrifields:
                 # Check if user is allowed or 404
                 f.can_edit(self.request.user)
-            # For Profile section
-            # Select self.request.user user that set him supervisor
-            if Profile.objects.filter(supervisor=self.request.user).exists():
-                supervisees = User.objects.filter(profile__supervisor=self.request.user)
-                context["supervisees"] = supervisees
-
             context["agrifields"] = agrifields
             context["fields_count"] = len(agrifields)
         except Agrifield.DoesNotExist:
@@ -328,6 +323,16 @@ def remove_supervisee_from_user_list(request):
         return HttpResponseRedirect(reverse("home"))
     else:
         raise Http404
+
+
+class SuperviseesView(LoginRequiredMixin, ListView):
+    model = Profile
+    template_name = "aira/supervisees/main.html"
+
+    def get_queryset(self):
+        qs = super().get_queryset().filter(supervisor=self.request.user)
+        qs = qs.order_by("first_name", "last_name")
+        return qs
 
 
 class AgrifieldTimeseriesView(LoginRequiredMixin, View):

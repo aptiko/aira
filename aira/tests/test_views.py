@@ -12,6 +12,7 @@ from django.contrib.auth.models import User
 from django.contrib.gis.geos import Point
 from django.core.cache import cache
 from django.core.files.base import ContentFile
+from django.http import HttpRequest
 from django.test import Client, TestCase, override_settings
 
 import pandas as pd
@@ -493,10 +494,8 @@ class RemoveSuperviseeTestCase(DataTestCase):
 
     def test_supervisee_list_contains_charlie(self):
         self.client.login(username="bob", password="topsecret")
-        response = self.client.get("/home/")
-        self.assertContains(
-            response, '<a href="/home/charlie/">charlie (Charlie Clark)</a>', html=True
-        )
+        response = self.client.get("/supervisees/")
+        self.assertContains(response, 'href="/home/charlie/"')
 
     def test_remove_charlie_from_supervisees(self):
         assert User.objects.get(username="charlie").profile.supervisor is not None
@@ -538,6 +537,60 @@ class RemoveSuperviseeTestCase(DataTestCase):
         self.client.login(username="bob", password="topsecret")
         response = self.client.post("/supervisee/remove/")
         self.assertEqual(response.status_code, 404)
+
+
+class SuperviseesViewTestCase(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        client = Client()
+        client.login(username="alice", password="topsecret")
+        cls.response = client.get("/supervisees/")
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.alice = cls._create_user(
+            56, "alice", "Alice", "Aniston", "alice@aniston.com"
+        )
+        cls.bob = cls._create_user(
+            57, "bob", "Bob", "Brown", "bob@brown.com", supervisor=cls.alice
+        )
+        cls.david = cls._create_user(
+            58, "david", "David", "Davidson", "dave@davidson.com", supervisor=cls.alice
+        )
+        cls.charlie = cls._create_user(
+            59, "charlie", "Charlie", "Clark", "ch@clark.com", supervisor=cls.alice
+        )
+
+    @classmethod
+    def _create_user(cls, id, username, first_name, last_name, email, supervisor=None):
+        user = User.objects.create_user(
+            id=id, username=username, password="topsecret", email=email
+        )
+        user.profile.first_name = first_name
+        user.profile.last_name = last_name
+        if supervisor:
+            user.profile.supervisor = supervisor
+        user.profile.save()
+        return user
+
+    def test_get_queryset(self):
+        view = views.SuperviseesView()
+        view.request = HttpRequest()
+        view.request.user = self.alice
+        self.assertEqual(
+            list(view.get_queryset()),
+            [self.bob.profile, self.charlie.profile, self.david.profile],
+        )
+
+    def test_response_contains_email(self):
+        self.assertContains(self.response, "bob@brown.com")
+
+    def test_response_contains_link_to_supervisee_fields(self):
+        self.assertContains(self.response, 'href="/home/bob/"')
+
+    def test_response_contains_link_to_remove_supervisee(self):
+        self.assertContains(self.response, 'action="/supervisee/remove/"')
 
 
 class RegistrationViewTestCase(TestCase):

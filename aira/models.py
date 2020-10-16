@@ -70,7 +70,11 @@ class Profile(models.Model):
         choices=EMAIL_LANGUAGE_CHOICES,
     )
     supervisor = models.ForeignKey(
-        User, related_name="supervisor", null=True, blank=True, on_delete=models.CASCADE
+        User,
+        related_name="supervisees",
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
     )
     supervision_question = models.BooleanField(choices=YES_OR_NO, default=False)
 

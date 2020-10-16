@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-22 14:17+0300\n"
+"POT-Creation-Date: 2020-10-22 16:34+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -218,7 +218,7 @@ msgstr "Είστε άνθρωπος;"
 msgid "150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr "150 ή λιγότεροι χαρακτήρες. Μόνο γράμματα, ψηφία και @/./+/-/_."
 
-#: aira/management/commands/send_notifications.py:74
+#: aira/management/commands/send_notifications.py:72
 msgid "Irrigation status for user {}"
 msgstr "Κατάσταση αρδεύσεων για το χρήστη {}"
 
@@ -264,15 +264,15 @@ msgstr "Ναι"
 msgid "No"
 msgstr "Όχι"
 
-#: aira/models.py:477
+#: aira/models.py:481
 msgid "Volume of water"
 msgstr "Όγκος νερού"
 
-#: aira/models.py:478
+#: aira/models.py:482
 msgid "Duration of irrigation"
 msgstr "Διάρκεια άρδευσης"
 
-#: aira/models.py:479
+#: aira/models.py:483
 msgid "Flowmeter readings"
 msgstr "Ενδείξεις υδρομέτρου"
 
@@ -429,13 +429,17 @@ msgstr "Εργαλεία"
 msgid "Account"
 msgstr "Λογαριασμός"
 
-#: aira/templates/aira/base/navbar-default.html:35
+#: aira/templates/aira/base/navbar-default.html:36
+msgid "Supervisees"
+msgstr "Επιτηρούμενοι"
+
+#: aira/templates/aira/base/navbar-default.html:38
 #: aira/templates/registration/logout.html:5
 #: aira/templates/registration/logout.html:8
 msgid "Logout"
 msgstr "Έξοδος"
 
-#: aira/templates/aira/base/navbar-default.html:43
+#: aira/templates/aira/base/navbar-default.html:46
 #: aira/templates/registration/activation_complete.html:11
 #: aira/templates/registration/login.html:5
 #: aira/templates/registration/login.html:11
@@ -445,12 +449,12 @@ msgstr "Έξοδος"
 msgid "Login"
 msgstr "Είσοδος"
 
-#: aira/templates/aira/base/navbar-default.html:44
+#: aira/templates/aira/base/navbar-default.html:47
 #: aira/templates/registration/registration_form.html:23
 msgid "Register"
 msgstr "Εγγραφή"
 
-#: aira/templates/aira/base/navbar-default.html:45
+#: aira/templates/aira/base/navbar-default.html:48
 msgid "Try"
 msgstr "Δοκιμή"
 
@@ -554,6 +558,7 @@ msgid "Monthly reference evapotranspiration"
 msgstr "Μηνιαία εξατμισοδιαπνοή αναφοράς"
 
 #: aira/templates/aira/home/agrifields_list/add_remove_agrifields.html:5
+#: aira/templates/aira/supervisees/main.html:21
 msgid "Fields"
 msgstr "Αγροτεμάχια"
 
@@ -709,14 +714,6 @@ msgstr "Δεν έχει οριστεί"
 msgid "Your account supervisor"
 msgstr "Επιτηρητής του λογαριασμού σας"
 
-#: aira/templates/aira/home/profile_info.html:16
-msgid "The following users have set you as their supervisor"
-msgstr "Οι παρακάτω χρήστες σάς έχουν ορίσει επιτηρητή τους"
-
-#: aira/templates/aira/home/profile_info.html:27
-msgid "Remove supervisee"
-msgstr "Διαγραφή χρήστη από επιτηρούμενο"
-
 #: aira/templates/aira/performance_chart/main.html:17
 msgid "Download chart data"
 msgstr "Λήψη δεδομένων γραφήματος"
@@ -819,6 +816,27 @@ msgstr "Δεν έχετε εισαγάγει δεδομένα"
 #, python-format
 msgid "Irrigation report for field %(field_name)s"
 msgstr "Αναφορά άρδευσης για το αγροτεμάχιο %(field_name)s"
+
+#: aira/templates/aira/supervisees/main.html:6
+#, python-format
+msgid "%(supervisor)s's supervisees"
+msgstr "Χρήστες επιτηρούμενοι από %(supervisor)s"
+
+#: aira/templates/aira/supervisees/main.html:11
+msgid "My supervisees"
+msgstr "Επιτηρούμενοι χρήστες"
+
+#: aira/templates/aira/supervisees/main.html:20
+msgid "Email"
+msgstr ""
+
+#: aira/templates/aira/supervisees/main.html:24
+msgid "Remove"
+msgstr "Αφαίρεση"
+
+#: aira/templates/aira/supervisees/main.html:27
+msgid "Remove supervisee"
+msgstr "Διαγραφή χρήστη από επιτηρούμενο"
 
 #: aira/templates/aira/tools/duration.html:5
 #: aira/templates/aira/tools/rate_by_drippers.html:4
@@ -944,6 +962,6 @@ msgstr "Παρακαλώ ελέγξτε το email σας"
 msgid "Registration"
 msgstr "Εγγραφή"
 
-#: aira/views.py:56
+#: aira/views.py:57
 msgid "N/A"
 msgstr ""

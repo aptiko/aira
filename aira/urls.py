@@ -82,4 +82,9 @@ urlpatterns = [
         views.remove_supervisee_from_user_list,
         name="supervisee_remove",
     ),
+    path(
+        "supervisees/",
+        views.SuperviseesView.as_view(),
+        name="supervisees",
+    ),
 ]
