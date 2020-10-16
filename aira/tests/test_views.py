@@ -1008,27 +1008,3 @@ class AgrifieldsMapPopupTestCase(SeleniumDataTestCase):
         self.map_marker.click()
         self.popup_element.wait_until_exists()
         self.assertTrue(self.popup_element.is_displayed())
-
-
-class ManagementMenuTestCase(TestCase):
-    """Check whether "Management" is translated correctly.
-
-    We have a "Management" menu, but its translation may conflict with a translation
-    from django-registration-redux, so we check that we've used context or whatever
-    alright.
-    """
-
-    def setUp(self):
-        self.user = User.objects.create_user(
-            id=55, username="bob", password="topsecret"
-        )
-        self.user.save()
-        r = self.client.login(username="bob", password="topsecret")
-        assert r is True
-
-    def test_management_translation(self):
-        self.client.cookies.load({settings.LANGUAGE_COOKIE_NAME: "el"})
-        response = self.client.get("/")
-        soup = BeautifulSoup(response.content, "html.parser")
-        management_link_element = soup.find("span", id="management-link")
-        self.assertEqual(management_link_element.get_text(), "Διαχείριση")

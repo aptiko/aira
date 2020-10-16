@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-22 14:08+0300\n"
+"POT-Creation-Date: 2020-10-22 14:17+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -417,36 +417,25 @@ msgid "demo"
 msgstr "Δοκιμαστική χρήση"
 
 #: aira/templates/aira/base/navbar-default.html:23
-#: aira/templates/aira/home/main-default.html:7
-#, python-format
-msgid "%(username)s home"
-msgstr "Αρχική %(username)s"
-
-#: aira/templates/aira/base/navbar-default.html:26
-msgctxt "management link"
-msgid "Management"
-msgstr "Διαχείριση"
-
-#: aira/templates/aira/base/navbar-default.html:29
 msgid "My fields"
 msgstr "Τα αγροτεμάχιά μου"
 
-#: aira/templates/aira/base/navbar-default.html:32
-#: aira/templates/aira/base/navbar-default.html:34
-msgid "Account"
-msgstr "Λογαριασμός"
-
-#: aira/templates/aira/base/navbar-default.html:36
+#: aira/templates/aira/base/navbar-default.html:24
 msgid "Tools"
 msgstr "Εργαλεία"
 
-#: aira/templates/aira/base/navbar-default.html:38
+#: aira/templates/aira/base/navbar-default.html:31
+#: aira/templates/aira/base/navbar-default.html:33
+msgid "Account"
+msgstr "Λογαριασμός"
+
+#: aira/templates/aira/base/navbar-default.html:35
 #: aira/templates/registration/logout.html:5
 #: aira/templates/registration/logout.html:8
 msgid "Logout"
 msgstr "Έξοδος"
 
-#: aira/templates/aira/base/navbar-default.html:46
+#: aira/templates/aira/base/navbar-default.html:43
 #: aira/templates/registration/activation_complete.html:11
 #: aira/templates/registration/login.html:5
 #: aira/templates/registration/login.html:11
@@ -456,16 +445,12 @@ msgstr "Έξοδος"
 msgid "Login"
 msgstr "Είσοδος"
 
-#: aira/templates/aira/base/navbar-default.html:47
+#: aira/templates/aira/base/navbar-default.html:44
 #: aira/templates/registration/registration_form.html:23
 msgid "Register"
 msgstr "Εγγραφή"
 
-#: aira/templates/aira/base/navbar-default.html:48
-msgid "Lost password?"
-msgstr "Ξεχάσατε το συνθηματικό;"
-
-#: aira/templates/aira/base/navbar-default.html:49
+#: aira/templates/aira/base/navbar-default.html:45
 msgid "Try"
 msgstr "Δοκιμή"
 
@@ -694,6 +679,11 @@ msgstr ""
 #, python-format
 msgid "Fields of %(user.username)s"
 msgstr "Αγροτεμάχια του χρήστη %(user.username)s"
+
+#: aira/templates/aira/home/main-default.html:7
+#, python-format
+msgid "%(username)s home"
+msgstr "Αρχική %(username)s"
 
 #: aira/templates/aira/home/main-default.html:12
 msgid "Please update your personal information."
