@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-22 16:34+0300\n"
+"POT-Creation-Date: 2020-10-22 16:43+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,11 +30,11 @@ msgstr "Όνομα"
 msgid "Family name"
 msgstr "Επώνυμο"
 
-#: aira/forms.py:26 aira/templates/aira/home/profile_info.html:8
+#: aira/forms.py:26
 msgid "Address"
 msgstr "Διεύθυνση"
 
-#: aira/forms.py:27 aira/templates/aira/home/profile_info.html:11
+#: aira/forms.py:27
 msgid "Frequency of email notifications"
 msgstr "Συχνότητα ειδοποιήσεων με email"
 
@@ -42,7 +42,7 @@ msgstr "Συχνότητα ειδοποιήσεων με email"
 msgid "Email notification language"
 msgstr "Γλώσσα ειδοποιήσεων"
 
-#: aira/forms.py:29 aira/templates/aira/home/profile_info.html:9
+#: aira/forms.py:29
 msgid "Supervisor"
 msgstr "Επιτηρητής"
 
@@ -694,25 +694,9 @@ msgstr "Αρχική %(username)s"
 msgid "Please update your personal information."
 msgstr "Παρακαλώ ανανεώστε τις προσωπικές πληροφορίες σας."
 
-#: aira/templates/aira/home/main-default.html:30
+#: aira/templates/aira/home/main-default.html:26
 msgid "Add a field."
 msgstr "Προσθέστε αγροτεμάχιο."
-
-#: aira/templates/aira/home/profile_info.html:4
-msgid "Your account"
-msgstr "Ο λογαριασμός σας"
-
-#: aira/templates/aira/home/profile_info.html:7
-msgid "Full name"
-msgstr "Ονοματεπώνυμο"
-
-#: aira/templates/aira/home/profile_info.html:10
-msgid "Not set"
-msgstr "Δεν έχει οριστεί"
-
-#: aira/templates/aira/home/profile_info.html:12
-msgid "Your account supervisor"
-msgstr "Επιτηρητής του λογαριασμού σας"
 
 #: aira/templates/aira/performance_chart/main.html:17
 msgid "Download chart data"
