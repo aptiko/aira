@@ -21,7 +21,6 @@
   <div class="container">
     {% block header %}
       {% include "aira/base/navbar.html" %}
-      {% include "aira/base/language_switcher.html" %}
       <br>
     {% endblock %}
 
@@ -40,9 +39,9 @@
 
   <div class="footer">
     {% block footer %}
-      <div class="container">
-        <hr>
-        <p>Powered by AIRA</p>
+      <hr>
+      <div class="container text-center">
+        <p>{% include "aira/base/language_switcher.html" %} | Powered by AIRA</p>
       </div>
     {% endblock %}
   </div>
