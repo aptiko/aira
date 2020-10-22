@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-22 16:45+0300\n"
+"POT-Creation-Date: 2020-10-22 16:51+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -686,11 +686,19 @@ msgstr "Αγροτεμάχια του χρήστη %(user.username)s"
 msgid "%(username)s home"
 msgstr "Αρχική %(username)s"
 
-#: aira/templates/aira/home/main-default.html:12
+#: aira/templates/aira/home/main-default.html:11
+#, python-format
+msgid ""
+"\n"
+"    %(username)s's fields\n"
+"  "
+msgstr "\nΑγροτεμάχια του χρήστη %(username)s"
+
+#: aira/templates/aira/home/main-default.html:17
 msgid "Please update your personal information."
 msgstr "Παρακαλώ ανανεώστε τις προσωπικές πληροφορίες σας."
 
-#: aira/templates/aira/home/main-default.html:26
+#: aira/templates/aira/home/main-default.html:30
 msgid "Add a field."
 msgstr "Προσθέστε αγροτεμάχιο."
 
