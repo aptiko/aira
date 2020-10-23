@@ -1,7 +1,12 @@
 {% load static %}
 {% load i18n %}
 
-{% include "aira/home/agrifields_list/add_remove_agrifields.html" %}
 {% for f in agrifields %}
   {% include "aira/home/agrifields_list/agrifield.html" %}
 {% endfor %}
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <a class="btn btn-success" href="{% url 'create_agrifield' url_username %}">{% trans "Add field" %}</a>
+  </div>
+</div>
