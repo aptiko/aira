@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-23 23:40+0300\n"
+"POT-Creation-Date: 2020-10-29 20:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -264,15 +264,15 @@ msgstr "Ναι"
 msgid "No"
 msgstr "Όχι"
 
-#: aira/models.py:481
+#: aira/models.py:484
 msgid "Volume of water"
 msgstr "Όγκος νερού"
 
-#: aira/models.py:482
+#: aira/models.py:485
 msgid "Duration of irrigation"
 msgstr "Διάρκεια άρδευσης"
 
-#: aira/models.py:483
+#: aira/models.py:486
 msgid "Flowmeter readings"
 msgstr "Ενδείξεις υδρομέτρου"
 
@@ -484,12 +484,12 @@ msgid ""
 "\n"
 "        You haven't registered any irrigation, or the latest one is too "
 "old.\n"
-"        <a href=\"%(irrlog_url)s\">Update irrigations</a>.\n"
+"        <a href=\"%(applied_irrigation_url)s\">Update irrigations</a>.\n"
 "    "
 msgstr ""
 "\n"
 "Δεν έχετε καταχωρήσει άρδευση, ή η τελευταία καταχωρημένη είναι πολύ "
-"παλιά.        <a href=\"%(irrlog_url)s\">Ενημέρωση αρδεύσεων</a>."
+"παλιά.        <a href=\"%(applied_irrigation_url)s\">Ενημέρωση αρδεύσεων</a>."
 
 #: aira/templates/aira/agrifield_list/js.html:18
 #, python-format
@@ -934,6 +934,6 @@ msgstr "Παρακαλώ ελέγξτε το email σας"
 msgid "Registration"
 msgstr "Εγγραφή"
 
-#: aira/views.py:57
+#: aira/views.py:82
 msgid "N/A"
 msgstr ""

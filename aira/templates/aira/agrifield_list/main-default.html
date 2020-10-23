@@ -22,16 +22,17 @@
     </div>
   </div>
 
-  {% if not agrifields %}
-    <div class="alert alert-warning">
-      <a href="#" class="close" data-dismiss="alert">&times;</a>
-      <i class="fa fa-exclamation-triangle"></i> &nbsp; <a href={% url 'create_agrifield' url_username %}>{% trans "Add a field." %}</a>
+  {% for f in agrifields %}
+    {% include "aira/agrifield_list/agrifield/main.html" %}
+  {% endfor %}
+
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <a class="btn btn-success" href="{% url 'agrifield-create' url_username %}">{% trans "Add field" %}</a>
     </div>
-  {% else %}
-    {% include "aira/home/agrifields_list/main.html" %}
-  {% endif %}
+  </div>
 {% endblock %}
 
 {% block extrajs %}
-  {% include "aira/home/js.html" %}
+  {% include "aira/agrifield_list/js.html" %}
 {% endblock %}

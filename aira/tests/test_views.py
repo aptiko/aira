@@ -71,25 +71,48 @@ class TestFrontPageView(TestCase):
         )
 
 
-class TestAgrifieldListView(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(
-            id=55, username="bob", password="topsecret"
+class MyFieldsViewTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.alice = User.objects.create_user(
+            id=54, username="alice", password="topsecret"
         )
-        self.user.save()
 
-    def test_home_view_denies_anynomous(self):
-        resp = self.client.get("/home/", follow=True)
-        self.assertRedirects(resp, "/accounts/login/?next=/home/")
+    def test_redirects(self):
+        self.client.login(username="alice", password="topsecret")
+        response = self.client.get("/myfields/")
+        self.assertRedirects(response, "/alice/fields/")
 
-    def test_home_view_loads_user(self):
-        self.client.login(username="bob", password="topsecret")
-        resp = self.client.get("/home/")
-        self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(resp, "aira/home/main.html")
+    def test_not_found_if_not_logged_on(self):
+        response = self.client.get("/myfields/")
+        self.assertEqual(response.status_code, 404)
 
 
-class UpdateAgrifieldViewTestCase(DataTestCase):
+class WrongUsernameTestMixin:
+    """Adds test that wrong username results in 404.
+
+    Many views have a URL of the form "/{username}/fields/{agrifield_id}/{remainder}".
+    In these cases, the agrifield is fully specified with the {agrifield_id}; the
+    {username} is not required. So we want to make sure you can't arrive at the field
+    through a wrong username.
+
+    In order to use this mixin, add it to the class parents, and specify the class
+    attribute wrong_username_test_mixin_url_remainder like this:
+        wrong_username_test_mixin_url_remainder =  "report"
+    """
+
+    def test_wrong_username_results_in_404(self):
+        username = self.agrifield.owner.username
+        remainder = self.wrong_username_test_mixin_url_remainder
+        self.client.login(username=username, password="topsecret")
+        assert "antonis" != username
+        response = self.client.get(f"/antonis/fields/{self.agrifield.id}/{remainder}/")
+        self.assertEqual(response.status_code, 404)
+
+
+class UpdateAgrifieldViewTestCase(WrongUsernameTestMixin, DataTestCase):
+    wrong_username_test_mixin_url_remainder = "edit"
+
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
@@ -106,7 +129,7 @@ class UpdateAgrifieldViewTestCase(DataTestCase):
     def _make_request(cls):
         cls.client = Client()
         cls.client.login(username="bob", password="topsecret")
-        cls.response = cls.client.get("/update_agrifield/{}/".format(cls.agrifield.id))
+        cls.response = cls.client.get(f"/bob/fields/{cls.agrifield.id}/edit/")
 
     def test_response_contains_agrifield_name(self):
         self.assertContains(self.response, "A field")
@@ -218,6 +241,10 @@ class UpdateAgrifieldViewTestCase(DataTestCase):
         )
 
 
+class DeleteAgrifieldViewTestCase(WrongUsernameTestMixin, DataTestCase):
+    wrong_username_test_mixin_url_remainder = "delete"
+
+
 class UpdateAgrifieldViewWithEmptyDefaultKcStagesTestCase(DataTestCase):
     @classmethod
     def setUpTestData(cls):
@@ -228,7 +255,7 @@ class UpdateAgrifieldViewWithEmptyDefaultKcStagesTestCase(DataTestCase):
     def _make_request(cls):
         cls.client = Client()
         cls.client.login(username="bob", password="topsecret")
-        cls.response = cls.client.get("/update_agrifield/{}/".format(cls.agrifield.id))
+        cls.response = cls.client.get(f"/bob/fields/{cls.agrifield.id}/edit/")
 
     def test_default_kc_stages(self):
         self.assertContains(
@@ -242,13 +269,15 @@ class CreateAgrifieldViewTestCase(TestCase):
             id=54, username="alice", password="topsecret"
         )
         self.client.login(username="alice", password="topsecret")
-        self.response = self.client.get("/create_agrifield/alice/")
+        self.response = self.client.get("/alice/fields/create/")
 
     def test_status_code(self):
         self.assertEqual(self.response.status_code, 200)
 
 
-class AgrifieldTimeseriesViewTestCase(TestCase):
+class AgrifieldTimeseriesViewTestCase(WrongUsernameTestMixin, TestCase):
+    wrong_username_test_mixin_url_remainder = "timeseries/temperature"
+
     def setUp(self):
         self._create_stuff()
         self._login()
@@ -299,7 +328,7 @@ class AgrifieldTimeseriesViewTestCase(TestCase):
         with patcher as m:
             self.mock_point_timeseries = m
             self.response = self.client.get(
-                "/agrifield/{}/timeseries/temperature/".format(self.agrifield.id)
+                f"/alice/fields/{self.agrifield.id}/timeseries/temperature/"
             )
 
     def tearDown(self):
@@ -328,7 +357,11 @@ class AgrifieldTimeseriesViewTestCase(TestCase):
         )
 
 
-class DownloadSoilAnalysisViewTestCase(TestCase, RandomMediaRootMixin):
+class DownloadSoilAnalysisViewTestCase(
+    WrongUsernameTestMixin, TestCase, RandomMediaRootMixin
+):
+    wrong_username_test_mixin_url_remainder = "soil_analysis"
+
     def setUp(self):
         self.override_media_root()
         self.alice = User.objects.create_user(
@@ -337,7 +370,7 @@ class DownloadSoilAnalysisViewTestCase(TestCase, RandomMediaRootMixin):
         self.agrifield = mommy.make(Agrifield, id=1, owner=self.alice)
         self.agrifield.soil_analysis.save("somefile", ContentFile("hello world"))
         self.client.login(username="alice", password="topsecret")
-        self.response = self.client.get("/agrifield/1/soil_analysis/")
+        self.response = self.client.get("/alice/fields/1/soil_analysis/")
 
     def tearDown(self):
         self.end_media_root_override()
@@ -352,10 +385,12 @@ class DownloadSoilAnalysisViewTestCase(TestCase, RandomMediaRootMixin):
         self.assertEqual(content, b"hello world")
 
 
-class RecommendationViewTestCase(DataTestCase):
+class AgrifieldReportViewTestCase(WrongUsernameTestMixin, DataTestCase):
+    wrong_username_test_mixin_url_remainder = "report"
+
     def _make_request(self):
         self.client.login(username="bob", password="topsecret")
-        self.response = self.client.get("/recommendation/{}/".format(self.agrifield.id))
+        self.response = self.client.get(f"/bob/fields/{self.agrifield.id}/report/")
 
     def _update_agrifield(self, **kwargs):
         for key in kwargs:
@@ -494,19 +529,21 @@ class RemoveSuperviseeTestCase(DataTestCase):
 
     def test_supervisee_list_contains_charlie(self):
         self.client.login(username="bob", password="topsecret")
-        response = self.client.get("/supervisees/")
-        self.assertContains(response, 'href="/home/charlie/"')
+        response = self.client.get("/bob/supervisees/")
+        self.assertContains(response, 'href="/charlie/fields/"')
 
     def test_remove_charlie_from_supervisees(self):
         assert User.objects.get(username="charlie").profile.supervisor is not None
         self.client.login(username="bob", password="topsecret")
-        response = self.client.post("/supervisee/remove/", data={"supervisee_id": "56"})
+        response = self.client.post(
+            "/bob/supervisees/remove/", data={"supervisee_id": "56"}
+        )
         self.assertEqual(response.status_code, 302)
         self.assertIsNone(User.objects.get(username="charlie").profile.supervisor)
 
     def test_attempting_to_remove_charlie_when_not_logged_in_returns_404(self):
         response = self.client.post(
-            "/supervisee/remove/", data={"supervisee_id": self.charlie.id}
+            "/bob/supervisees/remove/", data={"supervisee_id": self.charlie.id}
         )
         self.assertEqual(response.status_code, 404)
         self.assertIsNotNone(User.objects.get(username="charlie").profile.supervisor)
@@ -514,7 +551,7 @@ class RemoveSuperviseeTestCase(DataTestCase):
     def test_attempting_to_remove_charlie_when_logged_in_as_david_returns_404(self):
         self.client.login(username="david", password="topsecret")
         response = self.client.post(
-            "/supervisee/remove/", data={"supervisee_id": self.charlie.id}
+            "/bob/supervisees/remove/", data={"supervisee_id": self.charlie.id}
         )
         self.assertEqual(response.status_code, 404)
         self.assertIsNotNone(User.objects.get(username="charlie").profile.supervisor)
@@ -522,20 +559,32 @@ class RemoveSuperviseeTestCase(DataTestCase):
     def test_attempting_to_remove_when_already_removed_returns_404(self):
         self.client.login(username="bob", password="topsecret")
         response = self.client.post(
-            "/supervisee/remove/", data={"supervisee_id": self.david.id}
+            "/bob/supervisees/remove/", data={"supervisee_id": self.david.id}
         )
         self.assertEqual(response.status_code, 404)
 
     def test_attempting_to_remove_garbage_id_returns_404(self):
         self.client.login(username="bob", password="topsecret")
         response = self.client.post(
-            "/supervisee/remove/", data={"supervisee_id": "garbage"}
+            "/bob/supervisees/remove/", data={"supervisee_id": "garbage"}
         )
         self.assertEqual(response.status_code, 404)
 
     def test_posting_without_parameters_returns_404(self):
         self.client.login(username="bob", password="topsecret")
-        response = self.client.post("/supervisee/remove/")
+        response = self.client.post("/bob/supervisees/remove/")
+        self.assertEqual(response.status_code, 404)
+
+    def test_post_request_returns_404_if_wrong_user_in_url(self):
+        self.client.login(username="bob", password="topsecret")
+        response = self.client.post(
+            "/david/supervisees/remove/", {"supervisee_id": self.charlie.id}
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_request_returns_404(self):
+        self.client.login(username="bob", password="topsecret")
+        response = self.client.get("/bob/supervisees/remove/")
         self.assertEqual(response.status_code, 404)
 
 
@@ -545,7 +594,7 @@ class SuperviseesViewTestCase(TestCase):
         super().setUpClass()
         client = Client()
         client.login(username="alice", password="topsecret")
-        cls.response = client.get("/supervisees/")
+        cls.response = client.get("/alice/supervisees/")
 
     @classmethod
     def setUpTestData(cls):
@@ -587,47 +636,10 @@ class SuperviseesViewTestCase(TestCase):
         self.assertContains(self.response, "bob@brown.com")
 
     def test_response_contains_link_to_supervisee_fields(self):
-        self.assertContains(self.response, 'href="/home/bob/"')
+        self.assertContains(self.response, 'href="/bob/fields/"')
 
     def test_response_contains_link_to_remove_supervisee(self):
-        self.assertContains(self.response, 'action="/supervisee/remove/"')
-
-
-class RegistrationViewTestCase(TestCase):
-    def test_template_is_overriden(self):
-        """Test that the correct template is used.
-
-        In INSTALLED_APPS, "aira" has to go before "registration" (which has to go
-        before "django.contrib.admin"), so that the registration templates are read from
-        aira/templates/registration and not from django-registration-redux. This is easy
-        to misconfigure, so we test it here.
-        """
-        response = self.client.get("/accounts/register/")
-        # Check the title. django-registration-redux's default is "Register for an
-        # account"
-        self.assertContains(response, "<title>Registration —")
-
-
-class ProfileViewsTestCase(TestCase):
-    def setUp(self):
-        self.bob = User.objects.create_user(id=55, username="bob", password="topsecret")
-        self.bob.profile.first_name = "Bob"
-        self.bob.profile.last_name = "Brown"
-        self.bob.profile.save()
-        self.client.login(username="bob", password="topsecret")
-
-    def test_get_update_view(self):
-        response = self.client.get("/update_profile/{}/".format(self.bob.profile.id))
-        self.assertContains(response, "Bob")
-
-    def test_get_delete_confirmation(self):
-        response = self.client.get("/delete_user/55/")
-        self.assertContains(response, "Bob")
-
-    def test_confirm_delete(self):
-        response = self.client.post("/delete_user/55/")
-        self.assertEqual(response.status_code, 302)
-        self.assertFalse(User.objects.filter(username="bob").exists())
+        self.assertContains(self.response, 'action="/alice/supervisees/remove/"')
 
 
 _locmemcache = "django.core.cache.backends.locmem.LocMemCache"
@@ -667,17 +679,17 @@ class LastIrrigationOutsidePeriodWarningTestCase(DataTestCase):
 
     def test_no_warning_if_no_calculations(self):
         cache.set("model_run_1", None)
-        response = self.client.get("/home/")
+        response = self.client.get("/bob/fields/")
         self.assertNotContains(response, self.message)
 
     def test_warning_if_outside_period(self):
         self._setup_results_between(dt.datetime(2019, 3, 15), dt.datetime(2019, 9, 15))
-        response = self.client.get("/home/")
+        response = self.client.get("/bob/fields/")
         self.assertContains(response, self.message)
 
     def test_no_warning_if_inside_period(self):
         self._setup_results_between(dt.datetime(2019, 3, 15), dt.datetime(2019, 12, 15))
-        response = self.client.get("/home/")
+        response = self.client.get("/bob/fields/")
         self.assertNotContains(response, self.message)
 
 
@@ -768,16 +780,16 @@ class ResetPasswordTestCase(TestCase):
         self.assertEqual(r.status_code, 302)
 
 
-class IrrigationPerformanceChartTestCase(DataTestCase):
+class IrrigationPerformanceViewTestCase(WrongUsernameTestMixin, DataTestCase):
+    wrong_username_test_mixin_url_remainder = "performance"
+
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
         cls.results = cls.agrifield.execute_model()
         cls.client = Client()
         cls.client.login(username="bob", password="topsecret")
-        cls.response = cls.client.get(
-            f"/irrigation-performance-chart/{cls.agrifield.id}/"
-        )
+        cls.response = cls.client.get(f"/bob/fields/{cls.agrifield.id}/performance/")
         assert cls.response.status_code == 200
         cls.series = cls._extract_series_from_javascript(cls.response.content.decode())
 
@@ -816,19 +828,23 @@ class IrrigationPerformanceChartTestCase(DataTestCase):
         self.assertEqual(total_applied_water, 375)
 
 
-class IrrigationPerformanceCsvTestCase(DataTestCase):
+class IrrigationPerformanceCsvTestCase(WrongUsernameTestMixin, DataTestCase):
+    wrong_username_test_mixin_url_remainder = "performance/download"
+
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
         cls.results = cls.agrifield.execute_model()
-        cls.client = Client()
-        cls.client.login(username="bob", password="topsecret")
-        cls.response = cls.client.get(
-            f"/download-irrigation-performance/{cls.agrifield.id}/"
+
+    def _get_response(self):
+        self.client.login(username="bob", password="topsecret")
+        self.response = self.client.get(
+            f"/bob/fields/{self.agrifield.id}/performance/download/"
         )
-        assert cls.response.status_code == 200
+        assert self.response.status_code == 200
 
     def test_applied_water_when_irrigation_specified(self):
+        self._get_response()
         m = re.search(
             r"2018-03-15 23:59:00,[.\d]*,([.\d]*),",
             self.response.content.decode(),
@@ -838,6 +854,7 @@ class IrrigationPerformanceCsvTestCase(DataTestCase):
         self.assertAlmostEqual(value, 250.0)
 
     def test_applied_water_when_irrigation_determined_automatically(self):
+        self._get_response()
         m = re.search(
             r"2018-03-19 23:59:00,[.\d]*,([.\d]*),",
             self.response.content.decode(),
@@ -847,21 +864,75 @@ class IrrigationPerformanceCsvTestCase(DataTestCase):
         self.assertAlmostEqual(value, 125.20833333)
 
 
-class CreateAppliedIrrigationViewTestCase(TestCase):
-    @patch("aira.models.Agrifield.get_applied_irrigation_defaults")
-    def test_applied_irrigation_defaults(self, mock):
+class AppliedIrrigationsViewTestCase(WrongUsernameTestMixin, TestCase):
+    wrong_username_test_mixin_url_remainder = "appliedirrigations"
+
+    def setUp(self):
         owner = User.objects.create_user(username="bob", password="topsecret")
         self.client.login(username="bob", password="topsecret")
-        agrifield = mommy.make(Agrifield, owner=owner)
+        self.agrifield = mommy.make(Agrifield, owner=owner)
 
+    @patch("aira.models.Agrifield.get_applied_irrigation_defaults")
+    def test_applied_irrigation_defaults(self, mock):
         mock.return_value = {
             "supplied_water_volume": 1337,
             "irrigation_type": "HELLO_WORLD",
         }
-        response = self.client.get(f"/create_irrigationlog/{agrifield.id}/")
+        response = self.client.get(
+            f"/bob/fields/{self.agrifield.id}/appliedirrigations/"
+        )
         initials = response.context["form"].initial
         self.assertEqual(initials["supplied_water_volume"], 1337)
         self.assertEqual(initials["irrigation_type"], "HELLO_WORLD")
+
+
+class AppliedIrrigationWrongAgrifieldTestMixin:
+    """Adds test that wrong agrifield results in 404.
+
+    Some applied irrigation views have a URL of the form
+    "/{username}/fields/{agrifield_id}/appliedirrigations/{applied_irrigation_id}
+    /remainder".  In these cases, the applied irrigation is fully specified with the
+    {applied_irrigation_id}; the {agrifield_id} is not required. So we want to make sure
+    you can't arrive at the applied irrigation through a wrong agrifield.
+
+    In order to use this mixin, add it to the class parents, and specify the class
+    attribute applied_irrigation_wrong_agrifield_test_mixin_url_remainder like this:
+        applied_irrigation_wrong_agrifield_test_mixin_url_remainder = "delete"
+
+    See also WrongUsernameTestMixin.
+    """
+
+    def setUp(self):
+        owner = User.objects.create_user(username="bob", password="topsecret")
+        self.client.login(username="bob", password="topsecret")
+        self.agrifield = mommy.make(Agrifield, owner=owner)
+        self.applied_irrigation = mommy.make(
+            AppliedIrrigation, agrifield=self.agrifield, id=101
+        )
+
+    def test_wrong_agrifield_results_in_404(self):
+        remainder = self.applied_irrigation_wrong_agrifield_test_mixin_url_remainder
+        self.client.login(username=self.agrifield.owner.username, password="topsecret")
+        assert 1987 != self.agrifield.id
+        response = self.client.get(
+            f"/{self.agrifield.owner.username}/fields/1987/applied_irrigations/"
+            f"{self.applied_irrigation.id}/{remainder}/"
+        )
+        self.assertEqual(response.status_code, 404)
+
+
+class AppliedIrrigationEditViewTestCase(
+    WrongUsernameTestMixin, AppliedIrrigationWrongAgrifieldTestMixin, TestCase
+):
+    wrong_username_test_mixin_url_remainder = "appliedirrigations/101/edit"
+    applied_irrigation_wrong_agrifield_test_mixin_url_remainder = "edit"
+
+
+class AppliedIrrigationDeleteViewTestCase(
+    WrongUsernameTestMixin, AppliedIrrigationWrongAgrifieldTestMixin, TestCase
+):
+    wrong_username_test_mixin_url_remainder = "appliedirrigations/101/delete"
+    applied_irrigation_wrong_agrifield_test_mixin_url_remainder = "delete"
 
 
 @skipUnless(getattr(settings, "SELENIUM_WEBDRIVERS", False), "Selenium is unconfigured")
@@ -926,7 +997,7 @@ class AgrifieldsMapTestCase(SeleniumDataTestCase):
         # Visit user's agrifields list page
         r = self.selenium.login(username="bob", password="topsecret")
         self.assertTrue(r)
-        self.selenium.get(self.live_server_url + "/home/")
+        self.selenium.get(self.live_server_url + "/bob/fields/")
         self.map_element.wait_until_exists()
 
         # Check that there is a marker on the map (it marks the agrifield)
@@ -944,7 +1015,7 @@ class AgrifieldEditMapTestCase(SeleniumDataTestCase):
         # Visit user's edit agrifield list page
         r = self.selenium.login(username="bob", password="topsecret")
         self.assertTrue(r)
-        self.selenium.get(self.live_server_url + "/update_agrifield/1/")
+        self.selenium.get(self.live_server_url + "/bob/fields/1/edit/")
         self.map_element.wait_until_exists()
 
         # Check that there is a marker on the map (it marks the agrifield)
@@ -972,7 +1043,7 @@ class AgrifieldEditMapTestCase(SeleniumDataTestCase):
         # Visit user's add agrifield list page
         r = self.selenium.login(username="bob", password="topsecret")
         self.assertTrue(r)
-        self.selenium.get(self.live_server_url + "/create_agrifield/bob/")
+        self.selenium.get(self.live_server_url + "/bob/fields/create/")
         self.map_element.wait_until_exists()
 
         # Check that latitude and longitude values are empty
@@ -1025,7 +1096,7 @@ class AddIrrigationTestCase(SeleniumDataTestCase):
         # Visit user's add irrigation page
         r = self.selenium.login(username="bob", password="topsecret")
         self.assertTrue(r)
-        self.selenium.get(self.live_server_url + "/create_irrigationlog/1/")
+        self.selenium.get(self.live_server_url + "/bob/fields/1/appliedirrigations/")
         self.timestamp_input.wait_until_exists()
 
         # By default "water volume" should be selected
@@ -1051,7 +1122,7 @@ class AgrifieldsMapPopupTestCase(SeleniumDataTestCase):
         # Visit agrifields list page
         r = self.selenium.login(username="bob", password="topsecret")
         self.assertTrue(r)
-        self.selenium.get(self.live_server_url + "/home/bob/")
+        self.selenium.get(self.live_server_url + "/bob/fields/")
         self.map_marker.wait_until_exists()
 
         # Check that popup appears when marker is clicked

@@ -74,7 +74,7 @@ TEMPLATES = [
 ]
 
 ACCOUNT_ACTIVATION_DAYS = 3
-LOGIN_REDIRECT_URL = "/home"
+LOGIN_REDIRECT_URL = "/my_fields/"
 
 AIRA_DATA_HISTORICAL = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "../../../rasters_historical")

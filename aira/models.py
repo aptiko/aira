@@ -165,7 +165,10 @@ class IrrigationType(models.Model):
 class SoilAnalysisStorage(FileSystemStorage):
     def url(self, name):
         agrifield = Agrifield.objects.get(soil_analysis=name)
-        return reverse("agrifield-soil-analysis", kwargs={"agrifield_id": agrifield.id})
+        return reverse(
+            "agrifield-soil-analysis",
+            kwargs={"username": agrifield.owner.username, "agrifield_id": agrifield.id},
+        )
 
 
 class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):

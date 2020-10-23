@@ -1,7 +1,7 @@
 {% load static %}
 {% load i18n %}
 
-{% include "aira/home/agrifields_list/agrifield_results_warnings.html" %}
+{% include "aira/agrifield_list/agrifield/results_warnings.html" %}
 
 {% if f.needs_irrigation is None %}
   {% trans "This field is either outside the covered area or not calculated yet." %}
@@ -14,9 +14,9 @@
     width="20"
   >&nbsp;{% trans "No need to irrigate" %}
 {% else %}
-  {% include "aira/home/agrifields_list/agrifield_results_recommendation.html" %}
+  {% include "aira/agrifield_list/agrifield/results_recommendation.html" %}
 {% endif %}
 
 <div>&nbsp;</div>
 
-{% include "aira/home/agrifields_list/agrifield_results_buttons.html" %}
+{% include "aira/agrifield_list/agrifield/results_buttons.html" %}
