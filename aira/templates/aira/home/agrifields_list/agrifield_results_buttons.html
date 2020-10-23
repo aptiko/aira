@@ -1,17 +1,17 @@
 {% load i18n %}
 
 <div>
-  <a class="btn btn-success btn-xs" href="{% url 'create_irrlog' pk=f.id %}">
-    <i class="fa fa-plus-square-o"></i>&nbsp;<i class="fa fa-minus-square-o"></i>&nbsp; {% trans "Irrigations applied" %}
+  <a class="btn btn-success" href="{% url 'create_irrlog' pk=f.id %}">
+    {% trans "Irrigations applied" %}
   </a>
-  <a class="btn btn-success btn-xs" href="{% url 'recommendation' f.id %}">
-    <i class="fa fa-calendar"></i>&nbsp;{% trans "Irrigation report" %}
+  <a class="btn btn-success" href="{% url 'recommendation' f.id %}">
+    {% trans "Irrigation report" %}
   </a>
-  <a class="btn btn-success btn-xs" href="{% url 'irrigation-chart' f.id %}">
-    <i class="fa fa-line-chart"></i>&nbsp; {% trans "Irrigation performance" %}
+  <a class="btn btn-success" href="{% url 'irrigation-chart' f.id %}">
+     {% trans "Irrigation performance" %}
   </a>
   <div class="btn-group">
-    <button class="btn btn-success btn-xs dropdown-toggle" data-toggle="dropdown" aira-haspopup="true" aria-expanded="false">
+    <button class="btn btn-success dropdown-toggle" data-toggle="dropdown" aira-haspopup="true" aria-expanded="false">
       {% trans "Weather history" %} <span class="caret"></span>
     </button>
     <ul class="dropdown-menu">
