@@ -4,13 +4,11 @@
 
 {% load bootstrap3 %}
 
-{% block title %} {% blocktrans with username=user.username %}{{ username }} home{% endblocktrans %}{% endblock %}
+{% block title %} {% blocktrans with username=url_username %}{{ username }}'s fields{% endblocktrans %}{% endblock %}
 
 {% block content %}
   <h3>
-  {% blocktrans with username=url_username %}
-    {{username}}'s fields
-  {% endblocktrans %}
+  {% blocktrans with username=url_username %}{{username}}'s fields{% endblocktrans %}
   </h3>
   {% if not profile %}
     <div class="alert alert-warning">
