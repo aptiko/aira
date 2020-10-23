@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-22 16:51+0300\n"
+"POT-Creation-Date: 2020-10-23 16:55+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -392,7 +392,7 @@ msgid "List of irrigations"
 msgstr "Κατάλογος αρδεύσεων"
 
 #: aira/templates/aira/appliedirrigation/table_of_logs.html:10
-#: aira/templates/aira/home/agrifields_list/agrifield_results_recommendation.html:12
+#: aira/templates/aira/home/agrifields_list/agrifield_results_recommendation.html:19
 #: aira/templates/aira/recommendation/agrifield_results.html:13
 msgid "Date"
 msgstr "Ημερομηνία"
@@ -587,13 +587,13 @@ msgstr ""
 "σελίδα λίγο αργότερα για να δείτε τα νέα αποτελέσματα. Ο υπολογισμός συνήθως "
 "διαρκεί λίγα δευτερόλεπτα ως λίγα λεπτά."
 
-#: aira/templates/aira/home/agrifields_list/agrifield_results.html:8
+#: aira/templates/aira/home/agrifields_list/agrifield_results.html:7
 msgid "This field is either outside the covered area or not calculated yet."
 msgstr ""
 "Το αγροτεμάχιο είτε βρίσκεται εκτός της καλυπτόμενης περιοχής είτε δεν έχει "
 "ακόμα υπολογιστεί."
 
-#: aira/templates/aira/home/agrifields_list/agrifield_results.html:10
+#: aira/templates/aira/home/agrifields_list/agrifield_results.html:15
 msgid "No need to irrigate"
 msgstr "Δεν υπάρχει ανάγκη άρδευσης"
 
@@ -638,15 +638,15 @@ msgstr "Ταχύτητα ανέμου"
 msgid "Reference evapotranspiration"
 msgstr "Εξατμισοδιαπνοή αναφοράς"
 
-#: aira/templates/aira/home/agrifields_list/agrifield_results_recommendation.html:3
+#: aira/templates/aira/home/agrifields_list/agrifield_results_recommendation.html:10
 msgid "Apply one of these alternatives:"
 msgstr "Εφαρμόστε μια από αυτές τις εναλλακτικές:"
 
-#: aira/templates/aira/home/agrifields_list/agrifield_results_recommendation.html:13
+#: aira/templates/aira/home/agrifields_list/agrifield_results_recommendation.html:20
 msgid "Water stress factor"
 msgstr "Δείκτης υδατικής καταπόνησης"
 
-#: aira/templates/aira/home/agrifields_list/agrifield_results_recommendation.html:14
+#: aira/templates/aira/home/agrifields_list/agrifield_results_recommendation.html:21
 #: aira/templates/aira/recommendation/agrifield_results.html:23
 #: aira/templates/aira/tools/duration.html:18
 #: aira/templates/aira/tools/m3_to_mm.html:13
@@ -655,13 +655,9 @@ msgstr "Δείκτης υδατικής καταπόνησης"
 msgid "Irrigation water amount"
 msgstr "Δόση άρδευσης"
 
-#: aira/templates/aira/home/agrifields_list/agrifield_results_recommendation.html:20
+#: aira/templates/aira/home/agrifields_list/agrifield_results_recommendation.html:27
 msgid "or"
 msgstr "ή"
-
-#: aira/templates/aira/home/agrifields_list/agrifield_results_recommendation_heading.html:16
-msgid "Irrigation recommendation"
-msgstr "Συμβουλή άρδευσης"
 
 #: aira/templates/aira/home/agrifields_list/agrifield_results_warnings.html:7
 #, python-format
@@ -692,7 +688,9 @@ msgid ""
 "\n"
 "    %(username)s's fields\n"
 "  "
-msgstr "\nΑγροτεμάχια του χρήστη %(username)s"
+msgstr ""
+"\n"
+"Αγροτεμάχια του χρήστη %(username)s"
 
 #: aira/templates/aira/home/main-default.html:17
 msgid "Please update your personal information."
