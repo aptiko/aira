@@ -975,6 +975,7 @@ class AppliedIrrigationWrongAgrifieldTestMixin:
     def setUpTestData(cls):
         owner = User.objects.create_user(username="bob", password="topsecret")
         cls.agrifield = mommy.make(Agrifield, owner=owner)
+        cls.agrifield2 = mommy.make(Agrifield, owner=owner)
         cls.applied_irrigation = mommy.make(
             AppliedIrrigation, agrifield=cls.agrifield, id=101
         )
@@ -982,11 +983,11 @@ class AppliedIrrigationWrongAgrifieldTestMixin:
     def test_wrong_agrifield_results_in_404(self):
         remainder = self.applied_irrigation_wrong_agrifield_test_mixin_url_remainder
         self.client.login(username=self.agrifield.owner.username, password="topsecret")
-        assert 1987 != self.agrifield.id
-        response = self.client.get(
-            f"/{self.agrifield.owner.username}/fields/1987/appliedirrigations/"
-            f"{self.applied_irrigation.id}/{remainder}/"
+        url = (
+            f"/{self.agrifield.owner.username}/fields/{self.agrifield2.id}/"
+            f"appliedirrigations/{self.applied_irrigation.id}/{remainder}/"
         )
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
 
 
