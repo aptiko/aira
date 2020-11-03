@@ -607,7 +607,7 @@ class RemoveSuperviseeTestCase(DataTestCase):
         response = self.client.post(
             "/bob/supervisees/remove/", data={"supervisee_id": "56"}
         )
-        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, "/bob/supervisees/")
         self.assertIsNone(User.objects.get(username="charlie").profile.supervisor)
 
     def test_attempting_to_remove_charlie_when_not_logged_in_returns_404(self):
@@ -971,12 +971,12 @@ class AppliedIrrigationWrongAgrifieldTestMixin:
     See also WrongUsernameTestMixin.
     """
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         owner = User.objects.create_user(username="bob", password="topsecret")
-        self.client.login(username="bob", password="topsecret")
-        self.agrifield = mommy.make(Agrifield, owner=owner)
-        self.applied_irrigation = mommy.make(
-            AppliedIrrigation, agrifield=self.agrifield, id=101
+        cls.agrifield = mommy.make(Agrifield, owner=owner)
+        cls.applied_irrigation = mommy.make(
+            AppliedIrrigation, agrifield=cls.agrifield, id=101
         )
 
     def test_wrong_agrifield_results_in_404(self):
@@ -984,7 +984,7 @@ class AppliedIrrigationWrongAgrifieldTestMixin:
         self.client.login(username=self.agrifield.owner.username, password="topsecret")
         assert 1987 != self.agrifield.id
         response = self.client.get(
-            f"/{self.agrifield.owner.username}/fields/1987/applied_irrigations/"
+            f"/{self.agrifield.owner.username}/fields/1987/appliedirrigations/"
             f"{self.applied_irrigation.id}/{remainder}/"
         )
         self.assertEqual(response.status_code, 404)
@@ -1002,6 +1002,14 @@ class AppliedIrrigationDeleteViewTestCase(
 ):
     wrong_username_test_mixin_url_remainder = "appliedirrigations/101/delete"
     applied_irrigation_wrong_agrifield_test_mixin_url_remainder = "delete"
+
+    def test_redirection(self):
+        self.client.login(username="bob", password="topsecret")
+        field_id = self.agrifield.id
+        response = self.client.post(
+            f"/bob/fields/{field_id}/appliedirrigations/101/delete/"
+        )
+        self.assertRedirects(response, f"/bob/fields/{field_id}/appliedirrigations/")
 
 
 class SupervisedAgrifieldAppliedIrrigationLinksTestCase(DataTestCase):
