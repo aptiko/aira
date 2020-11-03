@@ -4,7 +4,7 @@
 [![Coverage Status][codecov-button]][codecov]
 
 [travis-button]: http://img.shields.io/travis/openmeteo/aira.svg
-[travis]: https://travis-ci.org/openmeteo/aira
+[travis]: https://travis-ci.com/github/openmeteo/aira
 [codecov-button]: https://codecov.io/gh/openmeteo/aira/branch/master/graph/badge.svg
 [codecov]: https://codecov.io/gh/openmeteo/aira
 
