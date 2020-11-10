@@ -2,6 +2,7 @@ import csv
 import datetime as dt
 import math
 import os
+import sys
 from collections import OrderedDict
 from decimal import Decimal
 from glob import iglob
@@ -481,34 +482,29 @@ class AgrifieldCustomKcStage(KcStage):
 
 
 class AppliedIrrigation(models.Model):
-
     IRRIGATION_TYPES = [
         ("VOLUME_OF_WATER", _("Volume of water")),
         ("DURATION_OF_IRRIGATION", _("Duration of irrigation")),
         ("FLOWMETER_READINGS", _("Flowmeter readings")),
     ]
-
     irrigation_type = models.CharField(
         max_length=50, choices=IRRIGATION_TYPES, default="VOLUME_OF_WATER"
     )
     is_automatically_reported = models.BooleanField(
-        verbose_name=_("Is automatically added by a flowmeter integration"),
+        verbose_name=_("Is automatically added by a telemetric flowmeter"),
         default=False,
     )
     agrifield = models.ForeignKey(Agrifield, on_delete=models.CASCADE)
     timestamp = models.DateTimeField()
-
     supplied_water_volume = models.FloatField(
         null=True, blank=True, validators=[MinValueValidator(0.0)]
     )
-
     supplied_duration = models.PositiveIntegerField(
         "Duration in minutes", null=True, blank=True
     )
     supplied_flow_rate = models.FloatField(
         "Flow rate (m3/h)", null=True, blank=True, validators=[MinValueValidator(0.0)]
     )
-
     flowmeter_reading_start = models.FloatField(
         null=True, blank=True, validators=[MinValueValidator(0.0)]
     )
@@ -572,18 +568,27 @@ class AppliedIrrigation(models.Model):
 
 
 class TelemetricFlowmeter(models.Model):
+    TYPES = ["LoRA_ARTA"]
+
     agrifield = models.OneToOneField(Agrifield, on_delete=models.CASCADE)
-
-    class Meta:
-        abstract = True
-
-
-class LoRA_ARTAFlowmeter(TelemetricFlowmeter):
-    device_id = models.CharField(max_length=100)
     flowmeter_water_percentage = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(100)],
         help_text=_("Percentage of water that corresponds to the flowmeter (%)"),
     )
+
+    class Meta:
+        abstract = True
+
+    @classmethod
+    def delete_all(cls, agrifield):
+        for flowmeter_type in cls.TYPES:
+            this_module = sys.modules[__name__]
+            flowmeter_class = getattr(this_module, f"{flowmeter_type}Flowmeter")
+            flowmeter_class.objects.filter(agrifield=agrifield).delete()
+
+
+class LoRA_ARTAFlowmeter(TelemetricFlowmeter):
+    device_id = models.CharField(max_length=100)
     conversion_rate = models.DecimalField(
         max_digits=5, decimal_places=2, default=Decimal("6.8")
     )
@@ -611,11 +616,9 @@ class LoRA_ARTAFlowmeter(TelemetricFlowmeter):
             for point in data_points
         ]
 
-        """
-        NOTE: Using `ignore_conflicts` in case TTN reports duplicate data points either
-        as a problem on their side, or ours. So with a `unique_together` constraint
-        on volume, timestamp, and agrifield, we can skip such points if they appear.
-        """
+        # We use `ignore_conflicts` in case TTN reports duplicate data points.
+        # So with a `unique_together` constraint on volume, timestamp, and agrifield, we
+        # can skip such points if they appear.
         AppliedIrrigation.objects.bulk_create(
             [AppliedIrrigation(**kwargs) for kwargs in kwargs_list],
             ignore_conflicts=True,

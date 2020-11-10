@@ -154,12 +154,16 @@ class AppliedIrrigationForm(forms.ModelForm):
         ("FLOWMETER_READINGS", _("Specify flowmeter readings")),
     ]
     irrigation_type = forms.ChoiceField(
-        widget=forms.RadioSelect(), choices=IRRIGATION_TYPE_CHOICES, label=""
+        widget=forms.RadioSelect(),
+        choices=IRRIGATION_TYPE_CHOICES,
+        label="",
+        initial="VOLUME_OF_WATER",
     )
 
     class Meta:
         model = AppliedIrrigation
-        exclude = ("agrifield", "is_automatically_reported")
+        exclude = ("is_automatically_reported",)
+        widgets = {"agrifield": forms.HiddenInput()}
         labels = {
             "timestamp": _("Date and time (YYYY-MM-DD HH:mm:ss) "),
             "supplied_water_volume": _("Volume of applied irrigation water (m³)"),
@@ -199,11 +203,13 @@ class LoRA_ARTAFlowmeterForm(forms.ModelForm):
     class Meta:
         model = LoRA_ARTAFlowmeter
         fields = [
+            "agrifield",
             "device_id",
             "flowmeter_water_percentage",
             "conversion_rate",
             "report_frequency_in_minutes",
         ]
+        widgets = {"agrifield": forms.HiddenInput()}
 
 
 class MyRegistrationForm(RegistrationFormTermsOfService):

@@ -59,7 +59,7 @@ class Migration(migrations.Migration):
             name="is_automatically_reported",
             field=models.BooleanField(
                 default=False,
-                verbose_name="Is automatically added by a flowmeter integration",
+                verbose_name="Is automatically added by a telemetric flowmeter",
             ),
         ),
         migrations.AddConstraint(

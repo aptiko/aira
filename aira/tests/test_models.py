@@ -449,6 +449,23 @@ class AppliedIrrigationUniqueTogetherConstraintTestCase(TestCase):
         self.assertEqual(models.AppliedIrrigation.objects.count(), 2)
 
 
+class TelemetricFlowmeterDeleteAllTestCase(TestCase):
+    def setUp(self):
+        self.flowmeter1 = mommy.make(models.LoRA_ARTAFlowmeter, agrifield__id=1)
+        self.flowmeter2 = mommy.make(models.LoRA_ARTAFlowmeter, agrifield__id=2)
+        models.TelemetricFlowmeter.delete_all(agrifield=self.flowmeter1.agrifield)
+
+    def test_flowmeter_of_agrifield1_have_been_deleted(self):
+        self.assertFalse(
+            models.LoRA_ARTAFlowmeter.objects.filter(agrifield__id=1).exists()
+        )
+
+    def test_flowmeter_of_agrifield2_have_not_been_deleted(self):
+        self.assertTrue(
+            models.LoRA_ARTAFlowmeter.objects.filter(agrifield__id=2).exists()
+        )
+
+
 class LoRA_ARTAFlowmeterTestCase(TestCase):
     def setUp(self):
         self.flowmeter = mommy.make(

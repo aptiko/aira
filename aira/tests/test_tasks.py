@@ -6,10 +6,7 @@ import requests
 from model_mommy import mommy
 
 from aira import models
-from aira.tasks import (
-    _request_the_things_network_digest,
-    add_irrigations_from_telemetric_flowmeters,
-)
+from aira.tasks import _get_ttn_data, add_irrigations_from_telemetric_flowmeters
 
 
 class MockResponse(requests.Response):
@@ -23,7 +20,8 @@ class MockResponse(requests.Response):
 
 
 @override_settings(
-    THE_THINGS_NETWORK_ACCESS_KEY="TOKEN", THE_THINGS_NETWORK_QUERY_URL="some.url"
+    AIRA_THE_THINGS_NETWORK_ACCESS_KEY="TOKEN",
+    AIRA_THE_THINGS_NETWORK_BASE_URL="some.url",
 )
 class LoRA_ARTAFlowmeterTTNIntegrationTestCase(TestCase):
     def setUp(self):
@@ -51,29 +49,25 @@ class LoRA_ARTAFlowmeterTTNIntegrationTestCase(TestCase):
     @patch("aira.tasks.requests.get")
     def test_ttn_response_parsing(self, mocked_get):
         mocked_get.return_value = MockResponse(data_points=self.data_points)
-        parsed = _request_the_things_network_digest()
-        expected_parsing = {
-            "d1": [
-                {
-                    "sensor_frequency": 1,
-                    "timestamp": "2020-10-18T00:19:27.62050186Z",
-                    "device_id": "d1",
-                },
-                {
-                    "sensor_frequency": 2,
-                    "timestamp": "2020-10-18T00:20:00.179529862Z",
-                    "device_id": "d1",
-                },
-            ],
-            "d2": [
-                {
-                    "sensor_frequency": 3,
-                    "timestamp": "2020-10-18T00:21:00.179529862Z",
-                    "device_id": "d2",
-                }
-            ],
-        }
-        self.assertEqual(parsed, expected_parsing)
+        result = _get_ttn_data()
+        expected_result = [
+            {
+                "sensor_frequency": 1,
+                "timestamp": "2020-10-18T00:19:27.62050186Z",
+                "device_id": "d1",
+            },
+            {
+                "sensor_frequency": 2,
+                "timestamp": "2020-10-18T00:20:00.179529862Z",
+                "device_id": "d1",
+            },
+            {
+                "sensor_frequency": 3,
+                "timestamp": "2020-10-18T00:21:00.179529862Z",
+                "device_id": "d2",
+            },
+        ]
+        self.assertEqual(result, expected_result)
 
     @patch("aira.tasks.requests.get")
     def test_irrigations_created_for_correct_flowmeter(self, mocked_get):

@@ -76,11 +76,6 @@ urlpatterns = [
         views.SuperviseesView.as_view(),
         name="supervisees",
     ),
-    path(
-        "create_telemetric_flowmeter/<int:agrifield_pk>/",
-        views.CreateTelemetricFlowmeterView.as_view(),
-        name="create_telemetric_flowmeter",
-    ),
     path("conversion_tools/", views.ConversionToolsView.as_view(), name="tools"),
     path("try/", views.DemoView.as_view(), name="try"),
 ]

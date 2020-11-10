@@ -58,6 +58,11 @@ In addition, it supports these settings:
   `False`. If you set it to `True`, whenever a Celery task encounters an
   error (raises an uncaught exception), the admins will be emailed.
 
+- **AIRA_THE_THINGS_NETWORK_ACCESS_KEY**,
+  **AIRA_THE_THINGS_NETWORK_BASE_URL**. These are used to get telemetric
+  flowmeter measurements so that applied irrigations are registered
+  automatically. They are used if the user enters a device id.
+
 ## Soil data
 
 Part of the configuration is a set of GeoTIFF files with information
