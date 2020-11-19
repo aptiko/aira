@@ -95,12 +95,12 @@ class AgrifieldSWBMixin:
                 # amount.
                 self.timeseries.at[date, "actual_net_irrigation"] = True
                 self.timeseries.at[date, "applied_irrigation"] = None
-            else:
+            elif self.timeseries.at[date, "actual_net_irrigation"] is not True:
                 applied_water_mm = float(volume / self.area * 1000)
-                self.timeseries.at[date, "actual_net_irrigation"] = (
+                self.timeseries.at[date, "actual_net_irrigation"] += (
                     applied_water_mm * self.irrigation_efficiency
                 )
-                self.timeseries.at[date, "applied_irrigation"] = applied_water_mm
+                self.timeseries.at[date, "applied_irrigation"] += applied_water_mm
 
     def _determine_crop_evapotranspiration(self):
         calculate_crop_evapotranspiration(
