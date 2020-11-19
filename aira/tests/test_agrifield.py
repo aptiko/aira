@@ -403,6 +403,24 @@ class LastIrrigationIsOutdatedTestCase(DataTestCase):
         self.assertFalse(self.agrifield.last_irrigation_is_outdated)
 
 
+@override_settings(TIME_ZONE="Europe/Athens")
+@patch(_in_covered_area, new_callable=PropertyMock, return_value=True)
+class AppliedIrrigationTimeZoneTestCase(DataTestCase):
+    def setUp(self):
+        super().setUp()
+        self.applied_irrigation_1.timestamp = dt.datetime(
+            2018, 3, 15, 0, 5, tzinfo=dt.timezone(dt.timedelta(hours=2), "EET")
+        )
+        self.applied_irrigation_1.save()
+        self.results = self.agrifield.execute_model()
+        self.timeseries = self.results["timeseries"]
+
+    def test_applied_irrigation_has_been_accounted_for_in_the_next_day(self, m):
+        var = "actual_net_irrigation"
+        timestamp = dt.datetime(2018, 3, 15, 23, 59)
+        self.assertAlmostEqual(self.timeseries[var].at[timestamp], 150)
+
+
 def mock_calculate_soil_water(**kwargs):
     timeseries = kwargs["timeseries"]
     timeseries["dr"] = 0
