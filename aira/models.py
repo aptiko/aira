@@ -16,7 +16,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models import Q, UniqueConstraint
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.http import Http404
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
@@ -335,11 +334,6 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
             return self.appliedirrigation_set.latest()
         except AppliedIrrigation.DoesNotExist:
             return None
-
-    def can_edit(self, user):
-        if (user == self.owner) or (user == self.owner.profile.supervisor):
-            return True
-        raise Http404
 
     class Meta:
         ordering = ("name", "area")
