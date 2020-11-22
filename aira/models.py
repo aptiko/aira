@@ -357,7 +357,10 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
     def _queue_for_calculation(self):
         from aira import tasks
 
-        cache_key = "agrifield_{}_status".format(self.id)
+        cache_key = f"agrifield_{self.id}_status"
+        if not self.in_covered_area:
+            cache.set(cache_key, "done", None)
+            return
 
         # If the agrifield is already in the Celery queue for calculation,
         # return without doing anything.
