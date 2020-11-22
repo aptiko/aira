@@ -294,7 +294,7 @@ class AgrifieldLatestAppliedIrrigationDefaultsTestCase(TestCase):
 class AgrifieldCustomKcStagesTestCase(TestCase):
     def setUp(self):
         self.agrifield = mommy.make(models.Agrifield)
-        csv = "15,0.9\n25\t0.8"
+        csv = "15 0.9\n25 0.8"
         self.agrifield.set_custom_kc_stages(csv)
 
     def test_set_custom_kc_stages(self):

@@ -1,4 +1,3 @@
-import csv
 import datetime as dt
 import math
 import os
@@ -461,14 +460,15 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
     def set_custom_kc_stages(self, s):
         """Replaces all existing kc stages with ones read from a string.
 
-        The string can be comma-delimited or tab-delimited, or a mix.
+        The string should be space-delimited, using full-stop as the decimal
+        separator.
         """
 
-        s = s.replace("\t", ",")
         self.agrifieldcustomkcstage_set.all().delete()
-        for i, row in enumerate(csv.reader(StringIO(s)), start=1):
-            ndays = int(row[0])
-            kc_end = float(row[1])
+        for i, row in enumerate(StringIO(s), start=1):
+            items = row.split()
+            ndays = int(items[0])
+            kc_end = float(items[1])
             AgrifieldCustomKcStage.objects.create(
                 agrifield=self, order=i, ndays=ndays, kc_end=kc_end
             )
