@@ -20,7 +20,7 @@ INSTALLED_APPS = [
     "aira",
     "registration",
     "django.contrib.admin",
-    "bootstrap3",
+    "bootstrap4",
     "mathfilters",
     "captcha",
 ]

@@ -194,7 +194,7 @@ class AppliedIrrigationForm(forms.ModelForm):
                 "flowmeter_water_percentage",
             ]
             self._validate_required(fields)
-        return super().clean()
+        return cleaned_data
 
     def _validate_required(self, fields=[]):
         # Used to require fields dynamically (depending on other submitted values)
