@@ -87,6 +87,41 @@ class MyFieldsViewTestCase(TestCase):
         self.assertEqual(response.status_code, 404)
 
 
+@override_settings(
+    AIRA_DEMO_USER_INITIAL_AGRIFIELDS=[
+        {
+            "name": "Test1",
+            "coordinates": [38, 24],
+            "crop_type_id": 1,
+            "irrigation_type_id": 1,
+            "area": 1000,
+            "applied_irrigation": [
+                {
+                    "timestamp": "2020-12-14 15:30+0000",
+                    "supplied_water_volume": 50,
+                },
+            ],
+        }
+    ]
+)
+class DemoViewTestCase(TestCase):
+    def setUp(self):
+        mommy.make(models.CropType, id=1)
+        mommy.make(models.IrrigationType, id=1)
+        assert not User.objects.filter(username="demo").exists()
+        self.response = self.client.get("/try/")
+
+    def test_demo_user_is_automatically_created(self):
+        self.assertTrue(User.objects.filter(username="demo").exists())
+
+    def test_redirects(self):
+        self.assertRedirects(self.response, "/demo/fields/")
+
+    def test_demo_user_is_not_created_if_it_already_exists(self):
+        response = self.client.get("/try/")
+        self.assertRedirects(response, "/demo/fields/")
+
+
 class WrongUsernameTestMixin:
     """Adds test that wrong username results in 404.
 

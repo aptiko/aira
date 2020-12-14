@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.contrib.gis.geos import Point
 from django.http import FileResponse, Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -111,9 +112,49 @@ class IrrigationPerformanceCsvView(CheckUsernameMixin, View):
 
 class DemoView(TemplateView):
     def get(self, request):
+        if not User.objects.filter(username="demo").exists():
+            self._create_demo_user()
         user = authenticate(username="demo", password="demo")
         login(request, user)
         return redirect("agrifield-list", user)
+
+    def _create_demo_user(self):
+        self._create_user()
+        self._create_profile()
+        self._create_agrifields()
+
+    def _create_user(self):
+        self.demo_user = User.objects.create_user(
+            username="demo", email="demo@aira.com", password="demo", is_active=True
+        )
+
+    def _create_profile(self):
+        self.demo_user.profile.first_name = "Aira Demo"
+        self.demo_user.profile.last_name = "Aira Demo"
+        self.demo_user.profile.address = "Aira"
+        self.demo_user.save()
+
+    def _create_agrifields(self):
+        for item in settings.AIRA_DEMO_USER_INITIAL_AGRIFIELDS:
+            f, created = models.Agrifield.objects.get_or_create(
+                owner=self.demo_user,
+                name=item["name"],
+                location=Point(*item["coordinates"]),
+                crop_type=models.CropType.objects.get(id=item["crop_type_id"]),
+                irrigation_type=models.IrrigationType.objects.get(
+                    id=item["irrigation_type_id"]
+                ),
+                area=item["area"],
+                use_custom_parameters=False,
+            )
+            f.save()
+            for applied_irrigation in item["applied_irrigation"]:
+                l, created = models.AppliedIrrigation.objects.get_or_create(
+                    agrifield=f,
+                    timestamp=applied_irrigation["timestamp"],
+                    supplied_water_volume=applied_irrigation["supplied_water_volume"],
+                )
+                l.save()
 
 
 class ConversionToolsView(LoginRequiredMixin, TemplateView):
