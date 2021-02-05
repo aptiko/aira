@@ -49,7 +49,7 @@ class CropTypeAdmin(admin.ModelAdmin):
     search_fields = ("name", "fek_category")
     list_filter = ("fek_category",)
     fields = (
-        ("name",),
+        ("name", "custom"),
         ("root_depth_min", "root_depth_max"),
         ("max_allowed_depletion"),
         ("kc_offseason", "kc_plantingdate", "planting_date"),

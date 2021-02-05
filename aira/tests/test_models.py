@@ -206,6 +206,41 @@ class CropTypeKcStagesTestCase(TestCase):
         )
 
 
+class CropTypeCustomTestCase(TestCase):
+    def _create_crop_type(self, name, custom):
+        return models.CropType.objects.create(
+            name=name,
+            root_depth_max=5,
+            root_depth_min=3,
+            max_allowed_depletion=0.5,
+            kc_plantingdate=0.7,
+            kc_offseason=0.3,
+            planting_date=dt.datetime(1971, 3, 21),
+            fek_category=5,
+            custom=custom,
+        )
+
+    def test_cannot_create_second_custom_crop_type(self):
+        self._create_crop_type(name="Pine trees", custom=True)
+        with self.assertRaises(IntegrityError):
+            self._create_crop_type(name="Cypresses", custom=True)
+
+    def test_can_create_noncustom_crop_type_if_custom_exists(self):
+        self._create_crop_type(name="Pine trees", custom=True)
+        self._create_crop_type(name="Cypresses", custom=False)
+
+    def test_cannot_change_noncustom_crop_type_to_custom_if_custom_exists(self):
+        self._create_crop_type(name="Pine trees", custom=True)
+        cypresses = self._create_crop_type(name="Cypresses", custom=False)
+        with self.assertRaises(IntegrityError):
+            cypresses.custom = True
+            cypresses.save()
+
+    def test_can_resave_existing_custom_crop_type(self):
+        pines = self._create_crop_type(name="Pine trees", custom=True)
+        pines.save()
+
+
 class AgrifieldLatestAppliedIrrigationDefaultsTestCase(TestCase):
     def setUp(self):
         self.agrifield = mommy.make(models.Agrifield)

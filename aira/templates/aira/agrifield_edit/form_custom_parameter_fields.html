@@ -2,7 +2,10 @@
 {% load bootstrap4 %}
 
 <div class='form-group' style="display:{% if object.use_custom_parameters %}block{% else %}none{% endif %}" id="custom_par">
-  <div class="card">
+  <fieldset>
+    {% bootstrap_field form.custom_parameter_set_name placeholder="" %}
+  </fieldset>
+  <div class="card mt-3">
     <div class="card-body">
       <fieldset>
         <legend>{% trans "Irrigation management" %}</legend>

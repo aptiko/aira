@@ -13,6 +13,7 @@ from django.contrib.gis.db import models
 from django.core.cache import cache
 from django.core.files.storage import FileSystemStorage
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import IntegrityError
 from django.db.models import Q, UniqueConstraint
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -99,6 +100,13 @@ def create__or_update_user_profile(sender, instance, created, **kwargs):
 
 class CropType(models.Model):
     name = models.CharField(max_length=100)
+    custom = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Indicates whether this is the basis for customized crop types. "
+            "Only one crop type can be custom."
+        ),
+    )
     root_depth_max = models.FloatField()
     root_depth_min = models.FloatField()
     max_allowed_depletion = models.FloatField()
@@ -108,7 +116,7 @@ class CropType(models.Model):
     fek_category = models.IntegerField()
 
     class Meta:
-        ordering = ("name",)
+        ordering = ("custom", "name")
         verbose_name_plural = "Crop Types"
 
     def __str__(self):
@@ -134,6 +142,12 @@ class CropType(models.Model):
         kc_stages = self.croptypekcstage_set.order_by("order")
         lines = [f"{s.ndays}\t{s.kc_end}" for s in kc_stages]
         return "\n".join(lines)
+
+    def save(self, *args, **kwargs):
+        if self.custom:
+            if CropType.objects.exclude(id=self.id).filter(custom=True).exists():
+                raise IntegrityError(_("There can only be a single custom crop type"))
+        super().save(*args, **kwargs)
 
 
 class KcStage(models.Model):
@@ -183,6 +197,13 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
     irrigation_type = models.ForeignKey(IrrigationType, on_delete=models.CASCADE)
     area = models.FloatField()
     use_custom_parameters = models.BooleanField(default=False)
+    custom_parameter_set_name = models.CharField(
+        blank=True,
+        max_length=255,
+        help_text=_(
+            "Optional; it can help you remember why you customized the parameters."
+        ),
+    )
     custom_kc_offseason = models.FloatField(
         null=True,
         blank=True,

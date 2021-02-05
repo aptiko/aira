@@ -238,6 +238,15 @@ class CreateAgrifieldView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
+        try:
+            custom_crop_type_id = models.CropType.objects.get(custom=True).id
+            if self.object.crop_type.id == custom_crop_type_id:
+                return reverse(
+                    "agrifield-update",
+                    kwargs={"username": self.kwargs["username"], "pk": self.object.id},
+                )
+        except models.CropType.DoesNotExist:
+            pass
         return reverse("agrifield-list", kwargs={"username": self.kwargs["username"]})
 
     def get_context_data(self, **kwargs):
@@ -247,9 +256,12 @@ class CreateAgrifieldView(LoginRequiredMixin, CreateView):
             user = User.objects.get(username=url_username)
             context["agrifields"] = models.Agrifield.objects.filter(owner=user).all()
             context["agrifield_owner"] = user
-
         except models.Agrifield.DoesNotExist:
             context["agrifields"] = None
+        try:
+            context["custom_crop_type_id"] = models.CropType.objects.get(custom=True).id
+        except models.CropType.DoesNotExist:
+            context["custom_crop_type_id"] = 0
         return context
 
 
@@ -265,6 +277,10 @@ class UpdateAgrifieldView(CheckUsernameMixin, LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["agrifield_owner"] = self.object.owner
+        try:
+            context["custom_crop_type_id"] = models.CropType.objects.get(custom=True).id
+        except models.CropType.DoesNotExist:
+            context["custom_crop_type_id"] = 0
         return context
 
 

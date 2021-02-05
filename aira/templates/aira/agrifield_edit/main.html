@@ -38,11 +38,12 @@
         }
       ];
       aira.agrifieldEditMap.addAgrifields(aira.agrifields, "{{ object.name }}");
+      aira.kcCharter.initialize();
     {% else %}
       aira.agrifieldEditMap.addAgrifields([], "Add new field");
     {% endif %}
     aira.agrifieldEditMap.registerClickEvent();
+    aira.customCropTypeId = {{ custom_crop_type_id }};
     aira.agrifieldEditDocumentReady();
-    aira.kcCharter.initialize();
   </script>
 {% endblock %}

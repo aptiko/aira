@@ -1,10 +1,33 @@
 aira.agrifieldEditDocumentReady = () => {
-  document.getElementById('id_use_custom_parameters').onclick = () => {
-    const customPar = document.getElementById('custom_par');
-    customPar.style.display = (
-      customPar.style.display === 'none' ? 'block' : 'none'
+  const useCustomParametersCheckbox = document.querySelector('#id_use_custom_parameters');
+  if (!useCustomParametersCheckbox) {
+    return;
+  }
+
+  const setCustomParametersDisplay = () => {
+    document.getElementById('custom_par').style.display = (
+      useCustomParametersCheckbox.checked ? 'block' : 'none'
     );
   };
+
+  const cropTypeSelect = document.querySelector('#id_crop_type');
+  let savedChecked = useCustomParametersCheckbox.checked;
+  const setCustomParametersCheckboxStatus = () => {
+    if (cropTypeSelect.selectedOptions[0].value === aira.customCropTypeId.toString()) {
+      useCustomParametersCheckbox.disabled = true;
+      savedChecked = useCustomParametersCheckbox.checked;
+      useCustomParametersCheckbox.checked = true;
+    } else {
+      useCustomParametersCheckbox.disabled = false;
+      useCustomParametersCheckbox.checked = savedChecked;
+    }
+    setCustomParametersDisplay();
+  };
+
+  cropTypeSelect.onchange = () => setCustomParametersCheckboxStatus();
+  useCustomParametersCheckbox.onclick = () => setCustomParametersDisplay();
+
+  setCustomParametersCheckboxStatus();
 
   /* The following should be set directly in the HTML, with the "step"
      * attribute. However, we are generating this through django-bootstrap4's
