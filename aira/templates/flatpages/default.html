@@ -1,17 +1,8 @@
 {% extends "aira/base/main.html" %}
 {% block title %} {{ flatpage.title }}{% endblock %}
 
-
-{% block main_page %}
-<h1 class="lead" style="font-size: 24pt;" align="center"><span class="text-success">{{ flatpage.title }}</span></h1>
-<hr>
-<br>
-<br>
-<br>
-<br>
-  <h3>{{ flatpage.content }}</h3>
-<br>
-<br>
-<br>
-<br>
+{% block content %}
+  <div class="container">
+    {{ flatpage.content }}
+  </div>
 {% endblock %}
