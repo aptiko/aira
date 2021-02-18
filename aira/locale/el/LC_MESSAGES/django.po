@@ -94,8 +94,8 @@ msgid "Irrigation type"
 msgstr "Μέθοδος άρδευσης"
 
 #: aira/forms.py:96
-msgid "Irrigated area (m²)"
-msgstr "Αρδευόμενη έκταση (m²)"
+msgid "Wetted area (m²)"
+msgstr "Διαβρεχόμενη έκταση (m²)"
 
 #: aira/forms.py:97
 msgid "Use custom parameters"
