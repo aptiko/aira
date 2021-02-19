@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib import admin
-from django.contrib.flatpages.views import flatpage
 from django.urls import include, path
 
 from registration.backends.default.views import RegistrationView
@@ -29,9 +28,7 @@ urlpatterns = [
     path("accounts/", include("registration.backends.default.urls")),
     path("", include("aira.urls")),
     path("captcha/", include("captcha.urls")),
-    path("description/", flatpage, {"url": "/description/"}, name="description"),
-    path("terms-of-use/", flatpage, {"url": "/terms-of-use/"}, name="terms"),
-    path("disclaimer/", flatpage, {"url": "/disclaimer/"}, name="disclaimer"),
+    path("pages/", include("django.contrib.flatpages.urls")),
 ]
 
 # If you want to use the Django debug toolbar, then:

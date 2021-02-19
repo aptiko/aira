@@ -9,12 +9,10 @@ class PermissionsMiddleware:
         "i18n",
         "admin",
         "captcha",
-        "description",
-        "terms-of-use",
-        "disclaimer",
         "conversion_tools",
         "try",
         "myfields",
+        "pages",
     )
 
     def __init__(self, get_response):
