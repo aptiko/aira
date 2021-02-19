@@ -107,7 +107,7 @@ class AgrifieldFormCleanKcStagesTestCase(TestCase):
             "crop_type": self.agrifield.crop_type.id,
             "irrigation_type": self.agrifield.irrigation_type.id,
             "is_virtual": False,
-            "area": 15,
+            "wetted_area": 15,
         }
 
     def test_validates_without_kc_stages(self):
@@ -217,7 +217,7 @@ class AgrifieldFormSaveTestCase(TestCase):
             "crop_type": self.agrifield.crop_type.id,
             "irrigation_type": self.agrifield.irrigation_type.id,
             "is_virtual": False,
-            "area": 15,
+            "wetted_area": 15,
             "kc_stages": "15\t0.9\n25\t0.8",
         }
         form = AgrifieldForm(self.post_data, instance=self.agrifield)

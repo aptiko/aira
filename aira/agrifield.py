@@ -98,7 +98,7 @@ class AgrifieldSWBMixin:
                 self.timeseries.at[date, "actual_net_irrigation"] = True
                 self.timeseries.at[date, "applied_irrigation"] = None
             elif self.timeseries.at[date, "actual_net_irrigation"] is not True:
-                applied_water_mm = float(volume / self.area * 1000)
+                applied_water_mm = float(volume / self.wetted_area * 1000)
                 self.timeseries.at[date, "actual_net_irrigation"] += (
                     applied_water_mm * self.irrigation_efficiency
                 )
@@ -144,7 +144,9 @@ class AgrifieldSWBMixin:
         self.timeseries["ifinal"] = (
             self.timeseries["recommended_net_irrigation"] / self.irrigation_efficiency
         )
-        self.timeseries["ifinal_m3"] = self.timeseries["ifinal"] / 1000 * self.area
+        self.timeseries["ifinal_m3"] = (
+            self.timeseries["ifinal"] / 1000 * self.wetted_area
+        )
 
     def _extract_columns_from_timeseries(self, *cols):
         result = {}

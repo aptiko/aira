@@ -94,7 +94,7 @@ class MyFieldsViewTestCase(TestCase):
             "coordinates": [38, 24],
             "crop_type_id": 1,
             "irrigation_type_id": 1,
-            "area": 1000,
+            "wetted_area": 1000,
             "applied_irrigation": [
                 {
                     "timestamp": "2020-12-14 15:30+0000",
@@ -594,7 +594,7 @@ class AgrifieldReportViewTestCase(WrongUsernameTestMixin, DataTestCase):
             timestamp=tz.localize(dt.datetime(2019, 9, 11, 17, 23)),
             supplied_water_volume=None,
         )
-        self._update_agrifield(area=653.7)
+        self._update_agrifield(wetted_area=653.7)
         self._make_request()
         self.assertContains(
             self.response, "<b>Last recorded irrigation:</b> 11/09/2019 17:00 <br>"

@@ -133,7 +133,7 @@ class SetupTestDataMixin:
             crop_type=cls.crop_type,
             irrigation_type=cls.irrigation_type,
             location=Point(22.0, 38.0),
-            area=2000,
+            wetted_area=2000,
             custom_kc_offseason=0.3,
             custom_kc_plantingdate=0.35,
             custom_planting_date=dt.date(1970, 3, 20),

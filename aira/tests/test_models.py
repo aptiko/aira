@@ -66,7 +66,7 @@ class AgrifieldTestCaseBase(TestCase):
             crop_type=self.crop_type,
             irrigation_type=self.irrigation_type,
             location=Point(18.0, 23.0),
-            area=2000,
+            wetted_area=2000,
         )
 
 
@@ -78,7 +78,7 @@ class AgrifieldTestCase(AgrifieldTestCaseBase):
             crop_type=self.crop_type,
             irrigation_type=self.irrigation_type,
             location=Point(18.0, 23.0),
-            area=2000,
+            wetted_area=2000,
         )
         self.assertTrue(isinstance(agrifield, models.Agrifield))
         self.assertEqual(agrifield.__str__(), agrifield.name)

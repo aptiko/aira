@@ -195,7 +195,7 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
     location = models.PointField()
     crop_type = models.ForeignKey(CropType, on_delete=models.CASCADE)
     irrigation_type = models.ForeignKey(IrrigationType, on_delete=models.CASCADE)
-    area = models.FloatField()
+    wetted_area = models.FloatField()
     use_custom_parameters = models.BooleanField(default=False)
     custom_parameter_set_name = models.CharField(
         blank=True,
@@ -357,7 +357,7 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
             return None
 
     class Meta:
-        ordering = ("name", "area")
+        ordering = ("name", "wetted_area")
         verbose_name_plural = "Agrifields"
 
     def __str__(self):
@@ -558,7 +558,7 @@ class AppliedIrrigation(models.Model):
             float(self.agrifield.p)
             * (self.agrifield.field_capacity - self.agrifield.wilting_point)
             * self.agrifield.root_depth
-            * self.agrifield.area
+            * self.agrifield.wetted_area
         )
 
     class Meta:

@@ -144,7 +144,7 @@ class DemoView(TemplateView):
                 irrigation_type=models.IrrigationType.objects.get(
                     id=item["irrigation_type_id"]
                 ),
-                area=item["area"],
+                wetted_area=item["wetted_area"],
                 use_custom_parameters=False,
             )
             f.save()

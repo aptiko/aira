@@ -101,7 +101,7 @@ AIRA_DEMO_USER_INITIAL_AGRIFIELDS = [
         "coordinates": (19.0, 38.0),
         "crop_type_id": 4,
         "irrigation_type_id": 1,
-        "area": 10000.0,
+        "wetted_area": 10000.0,
         "applied_irrigation": [],
     },
     {
@@ -109,7 +109,7 @@ AIRA_DEMO_USER_INITIAL_AGRIFIELDS = [
         "coordinates": (20.98, 39.15),
         "crop_type_id": 4,
         "irrigation_type_id": 1,
-        "area": 10000.0,
+        "wetted_area": 10000.0,
         "applied_irrigation": [
             {"timestamp": "2015-02-15 00:00Z", "supplied_water_volume": 23.0}
         ],
@@ -119,7 +119,7 @@ AIRA_DEMO_USER_INITIAL_AGRIFIELDS = [
         "coordinates": (20.92, 39.10),
         "crop_type_id": 4,
         "irrigation_type_id": 1,
-        "area": 10000.0,
+        "wetted_area": 10000.0,
         "applied_irrigation": [],
     },
     {
@@ -127,7 +127,7 @@ AIRA_DEMO_USER_INITIAL_AGRIFIELDS = [
         "coordinates": (20.94, 39.12),
         "crop_type_id": 4,
         "irrigation_type_id": 1,
-        "area": 10000.0,
+        "wetted_area": 10000.0,
         "applied_irrigation": [
             {"timestamp": "2014-02-15 00:00Z", "supplied_water_volume": 23.0}
         ],
