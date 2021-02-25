@@ -95,45 +95,6 @@ AIRA_TIMESERIES_CACHE_DIR = os.path.abspath(
 
 AIRA_MAPSERVER_BASE_URL = "/mapserver/"
 
-AIRA_DEMO_USER_INITIAL_AGRIFIELDS = [
-    {
-        "name": "Field outside covered area",
-        "coordinates": (19.0, 38.0),
-        "crop_type_id": 4,
-        "irrigation_type_id": 1,
-        "wetted_area": 10000.0,
-        "applied_irrigation": [],
-    },
-    {
-        "name": "Field with irrigation log",
-        "coordinates": (20.98, 39.15),
-        "crop_type_id": 4,
-        "irrigation_type_id": 1,
-        "wetted_area": 10000.0,
-        "applied_irrigation": [
-            {"timestamp": "2015-02-15 00:00Z", "supplied_water_volume": 23.0}
-        ],
-    },
-    {
-        "name": "Field with no irrigation log",
-        "coordinates": (20.92, 39.10),
-        "crop_type_id": 4,
-        "irrigation_type_id": 1,
-        "wetted_area": 10000.0,
-        "applied_irrigation": [],
-    },
-    {
-        "name": "Filed with log outside dataset",
-        "coordinates": (20.94, 39.12),
-        "crop_type_id": 4,
-        "irrigation_type_id": 1,
-        "wetted_area": 10000.0,
-        "applied_irrigation": [
-            {"timestamp": "2014-02-15 00:00Z", "supplied_water_volume": 23.0}
-        ],
-    },
-]
-
 AIRA_MAP_DEFAULT_CENTER = (20.98, 39.15)
 AIRA_MAP_DEFAULT_ZOOM = 10
 

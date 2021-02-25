@@ -43,11 +43,6 @@ In addition, it supports these settings:
   is the URL of the geographical server, such as
   `https://arta.interregir2ma.eu/mapserver/` or `/mapserver/`.
 
-- **AIRA_DEMO_USER_INITIAL_AGRIFIELDS**. When running `python manage.py
-  demo_user` on an empty installation, the demo user and some demo
-  fields are created. This holds the initial agrifields to be created
-  (see `aira_project/settings/base.py` for details).
-
 - **AIRA_MAP_DEFAULT_CENTER**, **AIRA_MAP_DEFAULT_ZOOM**. The default
   center for the map as a (longitude, latitude) tuple of floats, and the
   default zoom, as an integer. This defines the initial centering and

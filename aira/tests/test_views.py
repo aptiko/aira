@@ -87,23 +87,6 @@ class MyFieldsViewTestCase(TestCase):
         self.assertEqual(response.status_code, 404)
 
 
-@override_settings(
-    AIRA_DEMO_USER_INITIAL_AGRIFIELDS=[
-        {
-            "name": "Test1",
-            "coordinates": [38, 24],
-            "crop_type_id": 1,
-            "irrigation_type_id": 1,
-            "wetted_area": 1000,
-            "applied_irrigation": [
-                {
-                    "timestamp": "2020-12-14 15:30+0000",
-                    "supplied_water_volume": 50,
-                },
-            ],
-        }
-    ]
-)
 class DemoViewTestCase(TestCase):
     def setUp(self):
         mommy.make(models.CropType, id=1)
@@ -120,6 +103,13 @@ class DemoViewTestCase(TestCase):
     def test_demo_user_is_not_created_if_it_already_exists(self):
         response = self.client.get("/try/")
         self.assertRedirects(response, "/demo/fields/")
+
+    def test_demo_fields_are_automatically_created(self):
+        models.Agrifield.objects.filter(owner__username="demo").delete()
+        self.client.get("/try/")
+        self.assertEqual(
+            models.Agrifield.objects.filter(owner__username="demo").count(), 4
+        )
 
 
 class WrongUsernameTestMixin:
