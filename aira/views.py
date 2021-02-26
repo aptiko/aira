@@ -67,6 +67,9 @@ class IrrigationPerformanceView(CheckUsernameMixin, DetailView):
         sum_applied_irrigation[sum_applied_irrigation.isna()] = 0
         sum_applied_irrigation = sum_applied_irrigation.sum()
         self.context["sum_applied_irrigation"] = sum_applied_irrigation
+        self.context["sum_applied_irrigation_cubic"] = (
+            sum_applied_irrigation * self.object.wetted_area / 1000
+        )
 
     def _get_percentage_diff(self):
         results = self.object.results

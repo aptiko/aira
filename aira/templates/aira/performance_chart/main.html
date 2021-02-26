@@ -18,7 +18,7 @@
       <b>{% trans "Total effective precipitation" %}</b>: {{ object.results.timeseries.effective_precipitation.sum|floatformat:0 }} mm <br>
       <hr>
       <b>{% trans 'Total estimated irrigation water amount' %}</b>: {{ object.results.timeseries.ifinal_theoretical.sum|floatformat:0  }} mm <br>
-      <b>{% trans "Total applied irrigation water amount" %}</b>: {{ sum_applied_irrigation|floatformat:0 }} mm <br>
+      <b>{% trans "Total applied irrigation water amount" %}</b>: {{ sum_applied_irrigation|floatformat:0 }} mm ({{ sum_applied_irrigation_cubic|floatformat:0 }} m³)<br>
       <b>{% trans "Percentage difference"%}</b>: {{ percentage_diff }} % <br>
     {% endif %}
   </div>

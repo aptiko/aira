@@ -912,12 +912,15 @@ class IrrigationPerformanceViewTestCase(WrongUsernameTestMixin, DataTestCase):
 
     def test_total_applied_water(self):
         m = re.search(
-            r"Total applied irrigation water amount[^:]*:\s*(\d+)\s*mm",
+            r"Total applied irrigation water amount[^:]*:"
+            r"\s*(\d+)\s*mm\s+\((\d+)\s*m³\)",
             self.response.content.decode(),
             re.MULTILINE,
         )
-        total_applied_water = int(m.group(1))
-        self.assertEqual(total_applied_water, 375)
+        total_applied_water_mm = int(m.group(1))
+        self.assertEqual(total_applied_water_mm, 375)
+        total_applied_water_cubic = int(m.group(2))
+        self.assertEqual(total_applied_water_cubic, 750)
 
 
 class IrrigationPerformanceCsvTestCase(WrongUsernameTestMixin, DataTestCase):
