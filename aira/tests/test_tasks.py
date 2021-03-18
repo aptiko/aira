@@ -1,3 +1,4 @@
+import json
 from unittest.mock import patch
 
 from django.test import TestCase, override_settings
@@ -17,6 +18,11 @@ class MockResponse(requests.Response):
 
     def json(self):
         return self.data_points
+
+
+class MockInvalidResponse(MockResponse):
+    def json(self):
+        raise json.JSONDecodeError("Oops! Something went wrong", "", 0)
 
 
 @override_settings(
@@ -113,5 +119,17 @@ class LoRA_ARTAFlowmeterTTNIntegrationTestCase(TestCase):
                 }
             ]
         )
+        result = _get_ttn_data()
+        self.assertEqual(result, [])
+
+    @patch("aira.tasks.requests.get")
+    def test_empty_response(self, mocked_get):
+        mocked_get.return_value = MockResponse()
+        result = _get_ttn_data()
+        self.assertEqual(result, [])
+
+    @patch("aira.tasks.requests.get")
+    def test_invalid_response(self, mocked_get):
+        mocked_get.return_value = MockInvalidResponse()
         result = _get_ttn_data()
         self.assertEqual(result, [])

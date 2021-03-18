@@ -1,3 +1,4 @@
+import json
 import logging
 
 from django.conf import settings
@@ -46,12 +47,15 @@ def _get_ttn_data(since="1d"):
     url = f"{settings.AIRA_THE_THINGS_NETWORK_BASE_URL}?last={since}"
     response = requests.get(url, headers=headers)
     response.raise_for_status()
-    return [
-        {
-            "sensor_frequency": d["SensorFrequency"],
-            "timestamp": d["time"],
-            "device_id": d["device_id"],
-        }
-        for d in response.json()
-        if d["SensorFrequency"]
-    ]
+    try:
+        return [
+            {
+                "sensor_frequency": d["SensorFrequency"],
+                "timestamp": d["time"],
+                "device_id": d["device_id"],
+            }
+            for d in response.json()
+            if d["SensorFrequency"]
+        ]
+    except json.JSONDecodeError:
+        return []
