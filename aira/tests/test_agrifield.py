@@ -39,6 +39,8 @@ def setup_input_file(filename, value, timestamp_str):
 
 
 class SetupTestDataMixin:
+    current_date = "2018-03-18"
+
     @classmethod
     def _setup_rasters(cls):
         cls._setup_field_capacity_raster()
@@ -84,7 +86,7 @@ class SetupTestDataMixin:
 
     @classmethod
     def _setup_test_raster(cls, var, datestr, contents):
-        subdir = "forecast" if datestr >= "2018-03-18" else "historical"
+        subdir = "forecast" if datestr >= cls.current_date else "historical"
         filename = os.path.join(
             cls.tempdir, subdir, "daily_{}-{}.tif".format(var, datestr)
         )
@@ -189,7 +191,7 @@ class SetupTestDataMixin:
             ),
             override_settings(AIRA_DATA_FORECAST=os.path.join(cls.tempdir, "forecast")),
             override_settings(AIRA_DATA_SOIL=cls.tempdir),
-            freeze_time("2018-03-18 13:00:01"),
+            freeze_time(f"{cls.current_date} 13:00:01"),
         }
         for x in cls._context_managers:
             x.__enter__()
