@@ -311,17 +311,22 @@ class UpdateAgrifieldViewTestCase(WrongUsernameTestMixin, DataTestCase):
             self.response, '<span id="default-kc_offseason">0.7</span>', html=True
         )
 
-    def test_kc_planting_date(self):
+    def test_planting_date(self):
         soup = BeautifulSoup(self.response.content, "html.parser")
         planting_date_element = soup.find("input", id="id_custom_planting_date")
         self.assertEqual(planting_date_element.get("value"), "20/03")
+
+    def test_default_planting_date_field(self):
+        soup = BeautifulSoup(self.response.content, "html.parser")
+        planting_date_element = soup.find("input", id="id_default_planting_date")
+        self.assertEqual(planting_date_element.get("value"), "16/03")
 
     def test_planting_date_placeholder(self):
         soup = BeautifulSoup(self.response.content, "html.parser")
         planting_date_element = soup.find("input", id="id_custom_planting_date")
         self.assertEqual(planting_date_element.get("placeholder"), "day/month")
 
-    def test_default_planting_date(self):
+    def test_default_planting_date_message(self):
         self.assertContains(
             self.response, '<span id="default-planting_date">16 Mar</span>', html=True
         )

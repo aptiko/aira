@@ -1,3 +1,5 @@
+import datetime as dt
+
 from django.test import TestCase
 
 from model_mommy import mommy
@@ -188,7 +190,9 @@ class AgrifieldFormCleanKcStagesTestCase(TestCase):
 
 class AgrifieldFormInitializeTestCase(TestCase):
     def setUp(self):
-        self.agrifield = mommy.make(models.Agrifield)
+        self.agrifield = mommy.make(
+            models.Agrifield, crop_type__planting_date=dt.date(1970, 3, 17)
+        )
         self._make_kc_stage(order=1, ndays=5, kc_end=0.1)
         self._make_kc_stage(order=2, ndays=4, kc_end=0.2)
         self._make_kc_stage(order=3, ndays=3, kc_end=0.3)
@@ -205,6 +209,10 @@ class AgrifieldFormInitializeTestCase(TestCase):
     def test_kc_stages_initial_value(self):
         form = AgrifieldForm(instance=self.agrifield)
         self.assertEqual(form.initial["kc_stages"], "5\t0.1\n4\t0.2\n3\t0.3")
+
+    def test_default_planting_date_initial_value(self):
+        form = AgrifieldForm(instance=self.agrifield)
+        self.assertEqual(form.initial["default_planting_date"], "17/03")
 
 
 class AgrifieldFormSaveTestCase(TestCase):

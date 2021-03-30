@@ -198,9 +198,12 @@ describe('getPlantingDate', () => {
   });
 
   test('returns default planting date', () => {
-    document.body.innerHTML = '<input id="id_custom_planting_date" value="garbage">';
+    document.body.innerHTML = `
+      <input id="id_custom_planting_date" value="garbage">
+      <input id="id_default_planting_date" value="17/03">
+    `;
     mockCurrentDate(2018, 8, 29);
-    expect(aira.kcCharter.getPlantingDate()).toEqual(getDate(2018, 3, 15));
+    expect(aira.kcCharter.getPlantingDate()).toEqual(getDate(2018, 3, 17));
   });
 });
 

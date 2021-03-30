@@ -60,6 +60,7 @@ class AgrifieldForm(forms.ModelForm):
             "be one stage per line, first days then Kc, separated by space or tab."
         ),
     )
+    default_planting_date = forms.CharField(widget=forms.HiddenInput, required=False)
 
     class Meta:
         model = Agrifield
@@ -118,6 +119,9 @@ class AgrifieldForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if self.instance.pk:
             self.initial["kc_stages"] = self.instance.kc_stages_str
+            self.initial[
+                "default_planting_date"
+            ] = self.instance.crop_type.planting_date.strftime("%d/%m")
 
     def clean_kc_stages(self):
         data = self.cleaned_data["kc_stages"]

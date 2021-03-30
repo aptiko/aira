@@ -64,6 +64,7 @@ aira.map = {
       'Open Cycle Map': this.getOpenCycleMapBaseLayer(),
       'Hellenic Cadastre': this.getHellenicCadastreBaseLayer(),
       'Google Satellite': this.getGoogleSatelliteBaseLayer(),
+      'No background': L.tileLayer(''),
     };
   },
 
@@ -504,7 +505,8 @@ aira.kcCharter = {
     try {
       return this.getDateFromDayMonth(dayMonth);
     } catch (e) {
-      return this.getDateFromDayMonth('15/03');
+      const defaultDayMonth = document.querySelector('#id_default_planting_date').value;
+      return this.getDateFromDayMonth(defaultDayMonth);
     }
   },
 
