@@ -493,7 +493,7 @@ class AgrifieldReportViewTestCase(WrongUsernameTestMixin, DataTestCase):
     def test_response_contains_default_root_depth(self):
         self._update_agrifield(use_custom_parameters=False)
         self._make_request()
-        self.assertContains(self.response, "<b>Estimated root depth (max):</b> 0.95 m")
+        self.assertContains(self.response, "<b>Estimated root depth:</b> 0.95 m")
 
     def test_response_contains_custom_root_depth(self):
         self._update_agrifield(
@@ -502,7 +502,7 @@ class AgrifieldReportViewTestCase(WrongUsernameTestMixin, DataTestCase):
             custom_root_depth_max=0.30000001,
         )
         self._make_request()
-        self.assertContains(self.response, "<b>Estimated root depth (max):</b> 0.20 m")
+        self.assertContains(self.response, "<b>Estimated root depth:</b> 0.20 m")
 
     def test_response_contains_default_field_capacity(self):
         self._update_agrifield(use_custom_parameters=False)
