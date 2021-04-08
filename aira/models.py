@@ -50,8 +50,6 @@ notification_options = OrderedDict(
 
 YES_OR_NO = ((True, _("Yes")), (False, _("No")))
 
-YES_OR_NO_OR_NULL = ((True, _("Yes")), (False, _("No")), (None, "-"))
-
 EMAIL_LANGUAGE_CHOICES = (("en", "English"), ("el", "Ελληνικά"))
 
 
@@ -189,9 +187,7 @@ class SoilAnalysisStorage(FileSystemStorage):
 class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    is_virtual = models.NullBooleanField(
-        choices=YES_OR_NO_OR_NULL, null=True, default=None
-    )
+    is_virtual = models.BooleanField(default=False)
     location = models.PointField()
     crop_type = models.ForeignKey(CropType, on_delete=models.CASCADE)
     irrigation_type = models.ForeignKey(IrrigationType, on_delete=models.CASCADE)

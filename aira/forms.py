@@ -90,7 +90,7 @@ class AgrifieldForm(forms.ModelForm):
         ]
         labels = {
             "name": _("Field name"),
-            "is_virtual": _("Is this a virtual field?"),
+            "is_virtual": _("The field is virtual"),
             "location": _("Co-ordinates"),
             "crop_type": _("Crop type"),
             "irrigation_type": _("Irrigation type"),

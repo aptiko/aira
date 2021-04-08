@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-06 10:16+0300\n"
+"POT-Creation-Date: 2021-04-08 16:17+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -80,8 +80,8 @@ msgid "Field name"
 msgstr "Όνομα αγροτεμαχίου"
 
 #: aira/forms.py:93
-msgid "Is this a virtual field?"
-msgstr "Το αγροτεμάχιο είναι εικονικό;"
+msgid "The field is virtual"
+msgstr "Το αγροτεμάχιο είναι εικονικό"
 
 #: aira/forms.py:95
 #: aira/templates/aira/agrifield_report/fieldinfo_cropinfo.html:6
@@ -205,7 +205,7 @@ msgstr "Ένδειξη υδρομέτρου στην αρχή της άρδευ�
 msgid "Flowmeter reading at end of irrigation"
 msgstr "Ένδειξη υδρομέτρου στο τέλος της άρδευσης"
 
-#: aira/forms.py:185 aira/models.py:594
+#: aira/forms.py:185 aira/models.py:590
 msgid "Percentage of water that corresponds to the flowmeter (%)"
 msgstr "Ποσοστό νερού που αντιστοιχεί στο υδρόμετρο (%)"
 
@@ -257,17 +257,17 @@ msgstr "Κάθε δέκα μέρες"
 msgid "Monthly"
 msgstr "Κάθε μήνα"
 
-#: aira/models.py:51 aira/models.py:53
+#: aira/models.py:51
 #: aira/templates/aira/agrifield_report/agrifield_results.html:34
 msgid "Yes"
 msgstr "Ναι"
 
-#: aira/models.py:51 aira/models.py:53
+#: aira/models.py:51
 #: aira/templates/aira/agrifield_report/agrifield_results.html:34
 msgid "No"
 msgstr "Όχι"
 
-#: aira/models.py:106
+#: aira/models.py:104
 msgid ""
 "Indicates whether this is the basis for customized crop types. Only one crop "
 "type can be custom."
@@ -276,29 +276,29 @@ msgstr ""
 "καλλιέργειες. Μόνο ένα είδος καλλιέργειας μπορεί να έχει αυτό το "
 "χαρακτηριστικό."
 
-#: aira/models.py:149
+#: aira/models.py:147
 msgid "There can only be a single custom crop type"
 msgstr "Μπορεί να υπάρχει μόνο ένα προσαρμοσμένο είδος καλλιέργειας"
 
-#: aira/models.py:204
+#: aira/models.py:200
 msgid "Optional; it can help you remember why you customized the parameters."
 msgstr ""
 "Προαιρετικό. Μπορεί να σας βοηθήσει να θυμάστε γιατί χρησιμοποιήσατε "
 "προσαρμοσμένες παραμέτρους."
 
-#: aira/models.py:504
+#: aira/models.py:500
 msgid "Volume of water"
 msgstr "Όγκος νερού"
 
-#: aira/models.py:505
+#: aira/models.py:501
 msgid "Duration of irrigation"
 msgstr "Διάρκεια άρδευσης"
 
-#: aira/models.py:506
+#: aira/models.py:502
 msgid "Flowmeter readings"
 msgstr "Ενδείξεις υδρομέτρου"
 
-#: aira/models.py:512
+#: aira/models.py:508
 msgid "Is automatically added by a telemetric flowmeter"
 msgstr "Προστέθηκε αυτόματα από τηλεμετρικό ροόμετρο"
 
