@@ -1,5 +1,5 @@
 requests>=2.21,<3
-Django>=2.2,<3
+Django>=3.2,<4
 Jinja2>=2.6,<3
 django-bootstrap4>=2,<3
 django-registration-redux>=2.6,<3
@@ -7,5 +7,6 @@ django-simple-captcha>0.4,<1
 django-mathfilters==0.3.0,<2
 celery>=4.3,<5
 swb>=3,<4
-hspatial>=2.1,<3
+hspatial>=2.1.3,<3
 django-geowidgets<1
+pandas>=1

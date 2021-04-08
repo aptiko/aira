@@ -1,4 +1,4 @@
-dist: xenial
+dist: bionic
 
 language: python
 
@@ -10,17 +10,17 @@ node_js:
 
 addons:
   chrome: stable
-  postgresql: "9.5"
+  postgresql: "10"
   apt:
     packages:
       - gdal-bin
       - libgdal-dev
       - python3-psycopg2
-      - postgresql-9.5-postgis-2.4
+      - postgresql-10-postgis-2.4
       - rabbitmq-server
 
 install:
- - CPLUS_INCLUDE_PATH=/usr/include/gdal C_INCLUDE_PATH=/usr/include/gdal pip install 'gdal<1.11'
+ - CPLUS_INCLUDE_PATH=/usr/include/gdal C_INCLUDE_PATH=/usr/include/gdal pip install 'gdal<2.3'
  - pip install psycopg2==2.7.4
  - pip install isort flake8 black
  - pip install codecov
