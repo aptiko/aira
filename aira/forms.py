@@ -69,11 +69,16 @@ class AgrifieldForm(forms.ModelForm):
         exclude = ("owner",)
         fields = [
             "name",
+            "total_area",
+            "irrigated_area",
             "wetted_area",
             "location",
             "crop_type",
             "irrigation_type",
             "is_virtual",
+            "no_code",
+            "code",
+            "hydrant",
             "use_custom_parameters",
             "custom_parameter_set_name",
             "custom_planting_date",

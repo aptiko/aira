@@ -197,6 +197,10 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
     location = models.PointField()
     crop_type = models.ForeignKey(CropType, on_delete=models.CASCADE)
     irrigation_type = models.ForeignKey(IrrigationType, on_delete=models.CASCADE)
+    total_area = models.FloatField(blank=True, null=True, verbose_name=_("Total area"))
+    irrigated_area = models.FloatField(
+        blank=True, null=True, verbose_name=_("Irrigated area")
+    )
     wetted_area = models.FloatField()
     use_custom_parameters = models.BooleanField(default=False)
     custom_parameter_set_name = models.CharField(
@@ -259,6 +263,26 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
     )
     soil_analysis = models.FileField(
         blank=True, storage=SoilAnalysisStorage(), upload_to="soil_analyses"
+    )
+
+    hydrant = models.CharField(
+        max_length=30,
+        blank=True,
+        verbose_name=_("Hydrant"),
+        help_text=_("The number of the hydrant from which the field is irrigated"),
+    )
+    code = models.CharField(
+        max_length=30,
+        blank=True,
+        verbose_name=_("Field code"),
+    )
+    no_code = models.BooleanField(
+        verbose_name=_("Field does not have a code"),
+        help_text=_(
+            "If the field has an unknown code, or if it is unknown whether it has a "
+            "code, leave this off and the code blank."
+        ),
+        default=False,
     )
 
     @property
@@ -361,6 +385,9 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
     class Meta:
         ordering = ("name", "wetted_area")
         verbose_name_plural = "Agrifields"
+        indexes = [
+            models.Index(name="code_unique", fields=["code"], condition=~Q(code="")),
+        ]
 
     def __str__(self):
         return self.name

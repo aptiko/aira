@@ -5,11 +5,26 @@
   <div class='form-group'>
     {% bootstrap_field form.name %}
     {% bootstrap_field form.is_virtual %}
+    {% bootstrap_field form.total_area placeholder="m²" %}
+    {% bootstrap_field form.irrigated_area placeholder="m²" %}
     {% bootstrap_field form.wetted_area placeholder="m²" %}
     {% bootstrap_field form.location placeholder="" %}
     {% bootstrap_field form.crop_type %}
     {% bootstrap_field form.irrigation_type %}
     {% bootstrap_field form.soil_analysis %}
+    <div class="form-group">
+      <div class="form-check">
+        <input type="checkbox" id="id_show_administrative_data" class="form-check-input" {% if request.user.is_superuser %}checked{% endif %}>
+        <label class="form-check-label" for="id_show_administrative_data">{% trans "Show local organization administrative data" %}</label>
+      </div>
+    </div>
+    <div class="card" id="local_organization_administrative_data">
+      <div class="card-body">
+        {% bootstrap_field form.no_code %}
+        {% bootstrap_field form.code %}
+        {% bootstrap_field form.hydrant %}
+      </div>
+    </div>
     {% if object %}
       {% bootstrap_field form.use_custom_parameters %}
     {% endif %}

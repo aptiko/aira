@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-19 17:06+0300\n"
+"POT-Creation-Date: 2021-04-22 09:49+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -58,7 +58,7 @@ msgstr "Επιτηρητής"
 msgid "Consider me as supervisor for other accounts"
 msgstr "Επιθυμώ να είμαι επιτηρητής άλλων λογαριασμών"
 
-#: aira/forms.py:51 aira/forms.py:96
+#: aira/forms.py:51 aira/forms.py:101
 msgid "Co-ordinates"
 msgstr "Συντεταγμένες"
 
@@ -66,7 +66,7 @@ msgstr "Συντεταγμένες"
 msgid "Longitude and latitude in decimal degrees"
 msgstr "Γεωγραφικό μήκος και πλάτος σε μοίρες με δεκαδικά"
 
-#: aira/forms.py:57 aira/forms.py:105
+#: aira/forms.py:57 aira/forms.py:110
 msgid "Kc stages"
 msgstr "Στάδια Kc"
 
@@ -83,149 +83,149 @@ msgstr ""
 "πρέπει να είναι ένα στάδιο ανά γραμμή, μέρες και Kc, χωρισμένα με διάστημα ή "
 "tab."
 
-#: aira/forms.py:94 aira/templates/aira/agrifield_report/map.html:5
+#: aira/forms.py:99 aira/templates/aira/agrifield_report/map.html:5
 msgid "Field name"
 msgstr "Όνομα αγροτεμαχίου"
 
-#: aira/forms.py:95
+#: aira/forms.py:100
 msgid "The field is virtual"
 msgstr "Το αγροτεμάχιο είναι εικονικό"
 
-#: aira/forms.py:97
+#: aira/forms.py:102
 #: aira/templates/aira/agrifield_report/fieldinfo_cropinfo.html:6
 msgid "Crop type"
 msgstr "Καλλιέργεια"
 
-#: aira/forms.py:98
+#: aira/forms.py:103
 #: aira/templates/aira/agrifield_report/fieldinfo_irrigationinfo.html:5
 msgid "Irrigation type"
 msgstr "Μέθοδος άρδευσης"
 
-#: aira/forms.py:99
+#: aira/forms.py:104
 msgid "Wetted area (m²)"
 msgstr "Διαβρεχόμενη έκταση (m²)"
 
-#: aira/forms.py:100
+#: aira/forms.py:105
 msgid "Use custom parameters"
 msgstr "Χρήση προσαρμοσμένων παραμέτρων"
 
-#: aira/forms.py:101
+#: aira/forms.py:106
 msgid "Custom parameter set name"
 msgstr "Όνομα για το σύνολο προσαρμοσμένων παραμέτρων"
 
-#: aira/forms.py:102
+#: aira/forms.py:107
 msgid "Planting date"
 msgstr "Ημερομηνία φύτευσης"
 
-#: aira/forms.py:103
+#: aira/forms.py:108
 msgid "Kc off-season"
 msgstr "Kc εκτός περιόδου"
 
-#: aira/forms.py:104
+#: aira/forms.py:109
 msgid "Kc on planting date"
 msgstr "Kc στην ημερομηνία φύτευσης"
 
-#: aira/forms.py:106
+#: aira/forms.py:111
 #: aira/templates/aira/agrifield_report/fieldinfo_irrigationinfo.html:9
 msgid "Irrigation optimizer"
 msgstr "Συντελεστής βελτιστοποίησης άρδευσης"
 
-#: aira/forms.py:107
+#: aira/forms.py:112
 msgid "Estimated root depth (max)"
 msgstr "Εκτιμώμενο μέγιστο βάθος ριζοστρώματος (m)"
 
-#: aira/forms.py:108
+#: aira/forms.py:113
 msgid "Estimated root depth (min)"
 msgstr "Εκτιμώμενο ελάχιστο βάθος ριζοστρώματος (m)"
 
-#: aira/forms.py:109
+#: aira/forms.py:114
 #: aira/templates/aira/agrifield_report/fieldinfo_cropinfo.html:10
 msgid "Maximum allowed depletion"
 msgstr "Μέγιστο επιτρεπόμενο υδατικό έλλειμμα"
 
-#: aira/forms.py:110
+#: aira/forms.py:115
 #: aira/templates/aira/agrifield_report/fieldinfo_irrigationinfo.html:8
 msgid "Irrigation efficiency"
 msgstr "Αρδευτική αποδοτικότητα"
 
-#: aira/forms.py:111
+#: aira/forms.py:116
 #: aira/templates/aira/agrifield_report/fieldinfo_cropinfo.html:11
 msgid "Field capacity"
 msgstr "Υδατοϊκανότητα"
 
-#: aira/forms.py:112
+#: aira/forms.py:117
 #: aira/templates/aira/agrifield_report/fieldinfo_cropinfo.html:12
 msgid "Soil moisture at saturation"
 msgstr "Εδαφική υγρασία στον κορεσμό"
 
-#: aira/forms.py:113
+#: aira/forms.py:118
 #: aira/templates/aira/agrifield_report/fieldinfo_cropinfo.html:13
 msgid "Permanent wilting point"
 msgstr "Σημείο μόνιμης μάρανσης"
 
-#: aira/forms.py:114
+#: aira/forms.py:119
 msgid "Soil analysis document"
 msgstr "Έκθεση εδαφολογικής ανάλυσης"
 
-#: aira/forms.py:143
+#: aira/forms.py:148
 msgid "Error in line {i + 1}: \"{row}\" is not a valid (ndays, kc_end) pair"
 msgstr ""
 "Λάθος στη γραμμή {i + 1}: Το \"{row}\" δεν είναι έγκυρο ζεύγος (μέρες, "
 "kc_end)"
 
-#: aira/forms.py:152
+#: aira/forms.py:157
 msgid "You must select if field is virtual or not"
 msgstr "Πρέπει να καταχωρήσετε αν το αγροτεμάχιο είναι εικονικό ή όχι"
 
-#: aira/forms.py:164
+#: aira/forms.py:169
 msgid "Specify volume of irrigation water"
 msgstr "Καταχώριση όγκου νερού άρδευσης"
 
-#: aira/forms.py:165
+#: aira/forms.py:170
 msgid "Specify duration of irrigation"
 msgstr "Καταχώριση διάρκειας άρδευσης"
 
-#: aira/forms.py:166
+#: aira/forms.py:171
 msgid "Specify flowmeter readings"
 msgstr "Καταχώριση ενδείξεων υδρομέτρου"
 
-#: aira/forms.py:180
+#: aira/forms.py:185
 msgid "Date and time (YYYY-MM-DD HH:mm:ss) "
 msgstr "Ημερομηνία και ώρα (ΕΕΕΕ-ΜΜ-ΗΗ ΩΩ:λλ:δδ)"
 
-#: aira/forms.py:181
+#: aira/forms.py:186
 msgid "Volume of applied irrigation water (m³)"
 msgstr "Όγκος νερού που χορηγήθηκε (m³)"
 
-#: aira/forms.py:182
+#: aira/forms.py:187
 msgid "Duration of irrigation (min)"
 msgstr "Διάρκεια άρδευσης (λεπτά)"
 
-#: aira/forms.py:183
+#: aira/forms.py:188
 msgid "Flow rate (m³/h)"
 msgstr "Παροχή (m³/h)"
 
-#: aira/forms.py:184
+#: aira/forms.py:189
 msgid "Flowmeter reading at start of irrigation"
 msgstr "Ένδειξη υδρομέτρου στην αρχή της άρδευσης"
 
-#: aira/forms.py:185
+#: aira/forms.py:190
 msgid "Flowmeter reading at end of irrigation"
 msgstr "Ένδειξη υδρομέτρου στο τέλος της άρδευσης"
 
-#: aira/forms.py:187 aira/models.py:598
+#: aira/forms.py:192 aira/models.py:623
 msgid "Percentage of water that corresponds to the flowmeter (%)"
 msgstr "Ποσοστό νερού που αντιστοιχεί στο υδρόμετρο (%)"
 
-#: aira/forms.py:211
+#: aira/forms.py:216
 msgid "This field is required."
 msgstr "Αυτό το πεδίο πρέπει να έχει τιμή."
 
-#: aira/forms.py:228
+#: aira/forms.py:233
 msgid "Are you human?"
 msgstr "Είστε άνθρωπος;"
 
-#: aira/forms.py:233
+#: aira/forms.py:238
 msgid "150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr "150 ή λιγότεροι χαρακτήρες. Μόνο γράμματα, ψηφία και @/./+/-/_."
 
@@ -288,25 +288,55 @@ msgstr ""
 msgid "There can only be a single custom crop type"
 msgstr "Μπορεί να υπάρχει μόνο ένα προσαρμοσμένο είδος καλλιέργειας"
 
-#: aira/models.py:208
+#: aira/models.py:200
+msgid "Total area"
+msgstr "Συνολική έκταση"
+
+#: aira/models.py:202
+msgid "Irrigated area"
+msgstr "Αρδευόμενη έκταση"
+
+#: aira/models.py:210
 msgid "Optional; it can help you remember why you customized the parameters."
 msgstr ""
 "Προαιρετικό. Μπορεί να σας βοηθήσει να θυμάστε γιατί χρησιμοποιήσατε "
 "προσαρμοσμένες παραμέτρους."
 
-#: aira/models.py:508
+#: aira/models.py:271
+msgid "Hydrant"
+msgstr "Υδροληψία"
+
+#: aira/models.py:272
+msgid "The number of the hydrant from which the field is irrigated"
+msgstr "Ο κωδικός της υδροληψίας από την οποία αρδεύεται το αγροτεμάχιο"
+
+#: aira/models.py:277
+msgid "Field code"
+msgstr "Κωδικός αγροτεμαχίου"
+
+#: aira/models.py:280
+msgid "Field does not have a code"
+msgstr "Εκτός αναδασμού"
+
+#: aira/models.py:282
+msgid ""
+"If the field has an unknown code, or if it is unknown whether it has a code, "
+"leave this off and the code blank."
+msgstr " "
+
+#: aira/models.py:533
 msgid "Volume of water"
 msgstr "Όγκος νερού"
 
-#: aira/models.py:509
+#: aira/models.py:534
 msgid "Duration of irrigation"
 msgstr "Διάρκεια άρδευσης"
 
-#: aira/models.py:510
+#: aira/models.py:535
 msgid "Flowmeter readings"
 msgstr "Ενδείξεις υδρομέτρου"
 
-#: aira/models.py:516
+#: aira/models.py:541
 msgid "Is automatically added by a telemetric flowmeter"
 msgstr "Προστέθηκε αυτόματα από τηλεμετρικό ροόμετρο"
 
@@ -325,24 +355,28 @@ msgstr ""
 "Θέλετε πράγματι να διαγράψετε το αγροτεμάχιο <mark>%(name)s</mark>;"
 
 #: aira/templates/aira/agrifield_delete/confirm.html:19
-#: aira/templates/aira/agrifield_edit/form_basic_fields.html:28
+#: aira/templates/aira/agrifield_edit/form_basic_fields.html:43
 #: aira/templates/aira/appliedirrigation/confirm_delete.html:19
 #: aira/templates/aira/appliedirrigation/table_of_logs.html:24
 #: aira/templates/auth/user/confirm_delete.html:22
 msgid "Delete"
 msgstr "Διαγραφή"
 
-#: aira/templates/aira/agrifield_edit/form_basic_fields.html:22
+#: aira/templates/aira/agrifield_edit/form_basic_fields.html:18
+msgid "Show local organization administrative data"
+msgstr "Προβολή πληροφοριών έργου ΟΕΒ"
+
+#: aira/templates/aira/agrifield_edit/form_basic_fields.html:37
 #: aira/templates/aira/appliedirrigation/update.html:35
 #: aira/templates/aira/profile/form.html:39
 msgid "Update"
 msgstr "Ενημέρωση"
 
-#: aira/templates/aira/agrifield_edit/form_basic_fields.html:24
+#: aira/templates/aira/agrifield_edit/form_basic_fields.html:39
 msgid "Add"
 msgstr "Πρόσθεση"
 
-#: aira/templates/aira/agrifield_edit/form_basic_fields.html:31
+#: aira/templates/aira/agrifield_edit/form_basic_fields.html:46
 #: aira/templates/aira/appliedirrigation/update.html:36
 msgid "Back"
 msgstr "Επιστροφή"
@@ -997,3 +1031,12 @@ msgstr "Εγγραφή"
 #: aira/views.py:85
 msgid "N/A"
 msgstr ""
+
+#~ msgid "Code"
+#~ msgstr "Κωδικός"
+
+#~ msgid "A code, if available, given by a local authority."
+#~ msgstr "Κωδικός του αγροτεμαχίου (του ΤΟΕΒ ή συναφούς οργανισμού)"
+
+#~ msgid "These fields are only visible by the administrator."
+#~ msgstr "Αυτά τα πεδία είναι ορατά μόνο στο διαχειριστή."
