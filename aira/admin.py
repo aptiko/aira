@@ -10,6 +10,7 @@ class ProfileAdmin(admin.ModelAdmin):
         "user",
         "first_name",
         "last_name",
+        "fathers_name",
         "notification",
         "supervisor",
         "supervision_question",
