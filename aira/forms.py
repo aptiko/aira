@@ -13,7 +13,9 @@ from .models import Agrifield, AppliedIrrigation, LoRA_ARTAFlowmeter, Profile
 
 class ProfileForm(forms.ModelForm):
     supervisor = forms.ModelChoiceField(
-        queryset=User.objects.filter(profile__supervision_question=True), required=False
+        queryset=User.objects.filter(profile__supervision_question=True),
+        required=False,
+        label=_("Supervisor"),
     )
 
     class Meta:
@@ -101,6 +103,8 @@ class AgrifieldForm(forms.ModelForm):
             "location": _("Co-ordinates"),
             "crop_type": _("Crop type"),
             "irrigation_type": _("Irrigation type"),
+            "total_area": _("Total area (m²)"),
+            "irrigated_area": _("Irrigated area (m²)"),
             "wetted_area": _("Wetted area (m²)"),
             "use_custom_parameters": _("Use custom parameters"),
             "custom_parameter_set_name": _("Custom parameter set name"),
