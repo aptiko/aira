@@ -13,7 +13,7 @@
     <div class="card mb-3">
       <div class="card-body">
         <div class="row">
-          <div class="col-md">{{ p.first_name }} {{ p.last_name }} ({{ p.user.username }})</div>
+          <div class="col-md">{{ p.first_name }} {{ p.fathers_name }} {{ p.last_name }} ({{ p.user.username }})</div>
           <div class="col-md">
             <form method="post" class="form-inline" action="{% url "supervisee-remove" request.user.username %}">
               {% csrf_token %}
