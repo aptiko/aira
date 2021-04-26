@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-22 09:49+0300\n"
+"POT-Creation-Date: 2021-04-26 22:45+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -213,19 +213,19 @@ msgstr "Ένδειξη υδρομέτρου στην αρχή της άρδευ�
 msgid "Flowmeter reading at end of irrigation"
 msgstr "Ένδειξη υδρομέτρου στο τέλος της άρδευσης"
 
-#: aira/forms.py:192 aira/models.py:623
+#: aira/forms.py:192 aira/models.py:626
 msgid "Percentage of water that corresponds to the flowmeter (%)"
 msgstr "Ποσοστό νερού που αντιστοιχεί στο υδρόμετρο (%)"
 
-#: aira/forms.py:216
+#: aira/forms.py:218
 msgid "This field is required."
 msgstr "Αυτό το πεδίο πρέπει να έχει τιμή."
 
-#: aira/forms.py:233
+#: aira/forms.py:235
 msgid "Are you human?"
 msgstr "Είστε άνθρωπος;"
 
-#: aira/forms.py:238
+#: aira/forms.py:240
 msgid "150 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr "150 ή λιγότεροι χαρακτήρες. Μόνο γράμματα, ψηφία και @/./+/-/_."
 
@@ -339,6 +339,10 @@ msgstr "Ενδείξεις υδρομέτρου"
 #: aira/models.py:541
 msgid "Is automatically added by a telemetric flowmeter"
 msgstr "Προστέθηκε αυτόματα από τηλεμετρικό ροόμετρο"
+
+#: aira/models.py:550
+msgid "If empty, an automatically calculated default will be assumed"
+msgstr "Αν είναι κενό, θα υπολογιστεί αυτόματα μια προκαθορισμένη δόση άρδευσης"
 
 #: aira/templates/404.html:5 aira/templates/404.html:9
 msgid "Page not found"

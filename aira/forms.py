@@ -197,7 +197,9 @@ class AppliedIrrigationForm(forms.ModelForm):
         cleaned_data = super().clean()
         irrigation_type = cleaned_data.get("irrigation_type")
         if irrigation_type == "VOLUME_OF_WATER":
-            self._validate_required(["supplied_water_volume"])
+            # No field (except date is required; water volume may be empty to denote
+            # automatic calculation)
+            pass
         elif irrigation_type == "DURATION_OF_IRRIGATION":
             self._validate_required(["supplied_duration", "supplied_flow_rate"])
         elif irrigation_type == "FLOWMETER_READINGS":

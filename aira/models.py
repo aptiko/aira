@@ -544,7 +544,10 @@ class AppliedIrrigation(models.Model):
     agrifield = models.ForeignKey(Agrifield, on_delete=models.CASCADE)
     timestamp = models.DateTimeField()
     supplied_water_volume = models.FloatField(
-        null=True, blank=True, validators=[MinValueValidator(0.0)]
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(0.0)],
+        help_text=_("If empty, an automatically calculated default will be assumed"),
     )
     supplied_duration = models.PositiveIntegerField(
         "Duration in minutes", null=True, blank=True

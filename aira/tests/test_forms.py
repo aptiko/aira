@@ -51,10 +51,7 @@ class AppliedIrrigationFormTestCase(TestCase):
     def test_required_fields_with_type_volume_of_water(self):
         form_data = {**self.data, "irrigation_type": "VOLUME_OF_WATER"}
         form = AppliedIrrigationForm(data=form_data)
-        self.assertFalse(form.is_valid())
-        self.assertEquals(
-            form.errors, {"supplied_water_volume": ["This field is required."]}
-        )
+        self.assertTrue(form.is_valid())
 
     def test_required_fields_with_type_duration_of_irrigation(self):
         form_data = {**self.data, "irrigation_type": "DURATION_OF_IRRIGATION"}
