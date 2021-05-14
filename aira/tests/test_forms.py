@@ -58,11 +58,7 @@ class AppliedIrrigationFormTestCase(TestCase):
         form = AppliedIrrigationForm(data=form_data)
         self.assertFalse(form.is_valid())
         self.assertEquals(
-            form.errors,
-            {
-                "supplied_duration": ["This field is required."],
-                "supplied_flow_rate": ["This field is required."],
-            },
+            form.errors, {"supplied_duration": ["This field is required."]}
         )
 
     def test_required_fields_with_type_flowmeter_readings(self):

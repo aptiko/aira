@@ -377,7 +377,7 @@ aira.showAndHideIrrigationFieldsAccordingToType = () => {
     fields.forEach((field) => {
       const input = document.querySelector(`#id_${field}`);
       getFormGroupElement(input).style.display = '';
-      if (field !== 'supplied_water_volume') {
+      if (!['supplied_water_volume', 'supplied_flow_rate'].includes(field)) {
         input.setAttribute('required', '');
       }
     });

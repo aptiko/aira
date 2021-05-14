@@ -553,7 +553,11 @@ class AppliedIrrigation(models.Model):
         "Duration in minutes", null=True, blank=True
     )
     supplied_flow_rate = models.FloatField(
-        "Flow rate (m3/h)", null=True, blank=True, validators=[MinValueValidator(0.0)]
+        "Flow rate (m3/h)",
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(0.0)],
+        help_text=_("If empty, an automatically calculated default will be assumed"),
     )
     flowmeter_reading_start = models.FloatField(
         null=True, blank=True, validators=[MinValueValidator(0.0)]

@@ -203,7 +203,7 @@ class AppliedIrrigationForm(forms.ModelForm):
             # automatic calculation)
             pass
         elif irrigation_type == "DURATION_OF_IRRIGATION":
-            self._validate_required(["supplied_duration", "supplied_flow_rate"])
+            self._validate_required(["supplied_duration"])
         elif irrigation_type == "FLOWMETER_READINGS":
             fields = [
                 "flowmeter_reading_start",
