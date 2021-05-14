@@ -58,10 +58,10 @@ class Profile(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     fathers_name = models.CharField(
-        max_length=255, blank=True, verbose_name="Father's name"
+        max_length=255, blank=True, verbose_name=_("Father's name")
     )
     phone_number = models.CharField(
-        max_length=20, blank=True, verbose_name="Phone number"
+        max_length=20, blank=True, verbose_name=_("Phone number")
     )
     address = models.CharField(max_length=255, blank=True)
     notification = models.CharField(

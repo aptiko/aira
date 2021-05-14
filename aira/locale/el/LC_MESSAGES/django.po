@@ -40,7 +40,7 @@ msgstr "Πατρώνυμο"
 
 #: aira/forms.py:29
 msgid "Phone number"
-msgstr ""
+msgstr "Τηλέφωνο"
 
 #: aira/forms.py:30
 msgid "Address"

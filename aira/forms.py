@@ -25,8 +25,6 @@ class ProfileForm(forms.ModelForm):
         labels = {
             "first_name": _("Given name"),
             "last_name": _("Family name"),
-            "fathers_name": _("Father's name"),
-            "phone_number": _("Phone number"),
             "address": _("Address"),
             "notification": _("Frequency of email notifications"),
             "email_language": _("Email notification language"),
