@@ -160,6 +160,14 @@ class AgrifieldForm(forms.ModelForm):
             self.add_error("is_virtual", msg)
         return result
 
+    def clean(self):
+        # When the crop type is custom, the JavaScript make the "use_custom_parameters"
+        # field to on and disabled. Browsers do not submit disabled fields, so we need
+        # to set it ourselves.
+        super().clean()
+        if self.cleaned_data["crop_type"].custom:
+            self.cleaned_data["use_custom_parameters"] = True
+
     def save(self, *args, **kwargs):
         result = super().save(*args, **kwargs)
         self.instance.set_custom_kc_stages(self.cleaned_data["kc_stages"])

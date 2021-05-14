@@ -181,6 +181,34 @@ class AgrifieldFormCleanKcStagesTestCase(TestCase):
         self.assertEqual(form.cleaned_data["kc_stages"], "15 0.9\n25 0.8")
 
 
+class AgrifieldFormCleanUseCustomParametersTestCase(TestCase):
+    def setUp(self):
+        self.agrifield = mommy.make(models.Agrifield)
+        self.post_data = {
+            "name": "Great tomatoes",
+            "location_0": 20.87591,
+            "location_1": 39.14904,
+            "crop_type": self.agrifield.crop_type.id,
+            "irrigation_type": self.agrifield.irrigation_type.id,
+            "is_virtual": False,
+            "wetted_area": 15,
+        }
+
+    def test_default_true_if_custom_crop_type(self):
+        self.agrifield.crop_type.custom = True
+        self.agrifield.crop_type.save()
+        form = AgrifieldForm(self.post_data, instance=self.agrifield)
+        self.assertTrue(form.is_valid())
+        self.assertTrue(form.cleaned_data["use_custom_parameters"])
+
+    def test_default_false_if_normal_crop_type(self):
+        self.agrifield.crop_type.custom = False
+        self.agrifield.crop_type.save()
+        form = AgrifieldForm(self.post_data, instance=self.agrifield)
+        self.assertTrue(form.is_valid())
+        self.assertFalse(form.cleaned_data["use_custom_parameters"])
+
+
 class AgrifieldFormInitializeTestCase(TestCase):
     def setUp(self):
         self.agrifield = mommy.make(
