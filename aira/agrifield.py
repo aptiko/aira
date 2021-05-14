@@ -91,13 +91,13 @@ class AgrifieldSWBMixin:
             volume = applied_irrigation.volume
             if volume is None:
                 # When an irrigation event has been logged but we don't know how
-                # much, we assume we reached field capacity. At that point we use
-                # "True" instead of a number, which signals to
-                # swb.calculate_soil_water() to assume we irrigated with the recommended
-                # amount.
-                self.timeseries.at[date, "actual_net_irrigation"] = True
+                # much, we assume we reached field capacity (or saturation if we were
+                # already at field capacity). At that point we use "fc" instead of a
+                # number, which signals to swb.calculate_soil_water() to assume we
+                # irrigated with such an amount.
+                self.timeseries.at[date, "actual_net_irrigation"] = "fc"
                 self.timeseries.at[date, "applied_irrigation"] = None
-            elif self.timeseries.at[date, "actual_net_irrigation"] is not True:
+            else:
                 applied_water_mm = float(volume / self.wetted_area * 1000)
                 self.timeseries.at[date, "actual_net_irrigation"] += (
                     applied_water_mm * self.irrigation_efficiency
@@ -176,7 +176,7 @@ class AgrifieldSWBMixin:
 
         # We want the model to run ignoring the actual net irrigation, and instead
         # assume that the actual irrigation equals recommended irrigation.
-        self.timeseries["actual_net_irrigation"] = True
+        self.timeseries["actual_net_irrigation"] = "model"
 
         self.run_swb_model()
         self._rename_result_columns_in_timeseries(suffix="_theoretical")

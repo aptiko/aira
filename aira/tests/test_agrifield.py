@@ -283,7 +283,9 @@ class ExecuteModelTestCase(DataTestCase):
         self.assertAlmostEqual(
             self.timeseries.at[dt.datetime(2018, 3, 18, 23, 59), var], 0
         )
-        self.assertTrue(self.timeseries.at[dt.datetime(2018, 3, 19, 23, 59), var])
+        self.assertEqual(
+            self.timeseries.at[dt.datetime(2018, 3, 19, 23, 59), var], "fc"
+        )
 
     def test_ifinal_theoretical(self):
         var = "ifinal_theoretical"
