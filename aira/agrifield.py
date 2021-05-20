@@ -107,7 +107,7 @@ class AgrifieldSWBMixin:
     def _determine_crop_evapotranspiration(self):
         calculate_crop_evapotranspiration(
             timeseries=self.timeseries,
-            planting_date=self.crop_type.most_recent_planting_date,
+            planting_date=self.most_recent_planting_date,
             kc_offseason=self.crop_type.kc_offseason,
             kc_plantingdate=self.crop_type.kc_plantingdate,
             kc_stages=self.crop_type.kc_stages,

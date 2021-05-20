@@ -2,7 +2,6 @@ import datetime as dt
 import os
 import shutil
 import tempfile
-from unittest import mock
 
 from django.contrib.auth.models import User
 from django.contrib.gis.geos import Point
@@ -10,6 +9,7 @@ from django.core.files.base import ContentFile
 from django.db import IntegrityError
 from django.test import TestCase, override_settings
 
+from freezegun import freeze_time
 from model_mommy import mommy
 from swb import KcStage
 
@@ -153,27 +153,37 @@ class AgrifieldSoilAnalysisTestCase(TestCase, RandomMediaRootMixin):
         )
 
 
-class CropTypeMostRecentPlantingDateTestCase(TestCase):
+class AgrifieldMostRecentPlantingDateTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.crop_type = mommy.make(models.CropType, planting_date=dt.date(1971, 3, 15))
+        cls.agrifield = mommy.make(
+            models.Agrifield,
+            crop_type=cls.crop_type,
+            custom_planting_date=dt.date(1971, 4, 5),
+            use_custom_parameters=False,
+        )
+
     def setUp(self):
-        self.crop_type = mommy.make(
-            models.CropType, planting_date=dt.datetime(1971, 3, 15)
-        )
+        self.agrifield.use_custom_parameters = False
 
-    @mock.patch("aira.models.dt.date")
-    def test_result_when_it_has_appeared_this_year(self, m):
-        m.today.return_value = dt.datetime(2019, 3, 20)
-        m.side_effect = lambda *args, **kwargs: dt.date(*args, **kwargs)
-        self.assertEqual(
-            self.crop_type.most_recent_planting_date, dt.datetime(2019, 3, 15)
-        )
+    @freeze_time("2019-04-20 13:00:01")
+    def test_result_when_it_has_appeared_this_year(self):
+        self.assertEqual(self.agrifield.most_recent_planting_date, dt.date(2019, 3, 15))
 
-    @mock.patch("aira.models.dt.date")
-    def test_result_when_it_has_not_appeared_this_year_yet(self, m):
-        m.today.return_value = dt.datetime(2019, 3, 10)
-        m.side_effect = lambda *args, **kwargs: dt.date(*args, **kwargs)
-        self.assertEqual(
-            self.crop_type.most_recent_planting_date, dt.datetime(2018, 3, 15)
-        )
+    @freeze_time("2019-03-10 13:00:01")
+    def test_result_when_it_has_not_appeared_this_year_yet(self):
+        self.assertEqual(self.agrifield.most_recent_planting_date, dt.date(2018, 3, 15))
+
+    @freeze_time("2019-04-20 13:00:01")
+    def test_result_when_custom_parameters_and_has_appeared_this_year(self):
+        self.agrifield.use_custom_parameters = True
+        self.assertEqual(self.agrifield.most_recent_planting_date, dt.date(2019, 4, 5))
+
+    @freeze_time("2019-03-10 13:00:01")
+    def test_result_when_custom_parameters_and_has_not_appeared_this_year_yet(self):
+        self.agrifield.use_custom_parameters = True
+        self.assertEqual(self.agrifield.most_recent_planting_date, dt.date(2018, 4, 5))
 
 
 class CropTypeKcStagesTestCase(TestCase):

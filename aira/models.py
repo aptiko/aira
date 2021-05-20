@@ -127,14 +127,6 @@ class CropType(models.Model):
         return str(self.name)
 
     @property
-    def most_recent_planting_date(self):
-        today = dt.date.today()
-        result = self.planting_date.replace(year=today.year)
-        if result <= today:
-            return result
-        return result.replace(year=today.year - 1)
-
-    @property
     def kc_stages(self):
         result = []
         for kc_stage in self.croptypekcstage_set.order_by("order"):
@@ -522,6 +514,21 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
         kc_stages = self.agrifieldcustomkcstage_set.order_by("order")
         lines = [f"{s.ndays}\t{s.kc_end}" for s in kc_stages]
         return "\n".join(lines)
+
+    @property
+    def planting_date(self):
+        if self.use_custom_parameters and self.custom_planting_date:
+            return self.custom_planting_date
+        else:
+            return self.crop_type.planting_date
+
+    @property
+    def most_recent_planting_date(self):
+        today = dt.date.today()
+        result = self.planting_date.replace(year=today.year)
+        if result <= today:
+            return result
+        return result.replace(year=today.year - 1)
 
 
 class AgrifieldCustomKcStage(KcStage):
