@@ -289,7 +289,7 @@ class UpdateAgrifieldViewTestCase(WrongUsernameTestMixin, DataTestCase):
     def test_kc_plantingdate_placeholder(self):
         soup = BeautifulSoup(self.response.content, "html.parser")
         kc_plantingdate_element = soup.find("input", id="id_custom_kc_plantingdate")
-        self.assertEqual(kc_plantingdate_element.get("placeholder"), "0.3 - 1.25")
+        self.assertEqual(kc_plantingdate_element.get("placeholder"), "0.1 - 1.25")
 
     def test_default_kc_plantingdate(self):
         self.assertContains(
@@ -304,7 +304,7 @@ class UpdateAgrifieldViewTestCase(WrongUsernameTestMixin, DataTestCase):
     def test_kc_offseason_placeholder(self):
         soup = BeautifulSoup(self.response.content, "html.parser")
         kc_offseason_element = soup.find("input", id="id_custom_kc_offseason")
-        self.assertEqual(kc_offseason_element.get("placeholder"), "0.3 - 1.25")
+        self.assertEqual(kc_offseason_element.get("placeholder"), "0.1 - 1.25")
 
     def test_default_kc_offseason(self):
         self.assertContains(
