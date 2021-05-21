@@ -89,7 +89,7 @@ class AgrifieldSWBMixin:
             if tz.localize(date) < start or tz.localize(date) > end:
                 continue
             volume = applied_irrigation.volume
-            if volume is None:
+            if volume is None or self.timeseries.at[date, "applied_irrigation"] is None:
                 # When an irrigation event has been logged but we don't know how
                 # much, we assume we reached field capacity (or saturation if we were
                 # already at field capacity). At that point we use "fc" instead of a

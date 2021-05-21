@@ -176,6 +176,14 @@ class SetupTestDataMixin:
             timestamp=dt.datetime(2018, 3, 19, 17, 0, tzinfo=dt.timezone.utc),
             supplied_water_volume=None,
         )
+        # Yet again on the same date with amount specified, to verify it works when
+        # the one with amount specified comes after.
+        cls.applied_irrigation_5 = mommy.make(
+            models.AppliedIrrigation,
+            agrifield=cls.agrifield,
+            timestamp=dt.datetime(2018, 3, 19, 18, 0, tzinfo=dt.timezone.utc),
+            supplied_water_volume=10,
+        )
 
     @classmethod
     def setUpClass(cls):
@@ -395,10 +403,11 @@ class LastIrrigationIsOutdatedTestCase(DataTestCase):
         self.applied_irrigation_1.delete()
         self.applied_irrigation_2.delete()
         self.applied_irrigation_3.delete()
-        self.applied_irrigation_4.timestamp = dt.datetime(
+        self.applied_irrigation_4.delete()
+        self.applied_irrigation_5.timestamp = dt.datetime(
             2018, 3, 10, 20, 0, tzinfo=dt.timezone.utc
         )
-        self.applied_irrigation_4.save()
+        self.applied_irrigation_5.save()
         self.assertTrue(self.agrifield.last_irrigation_is_outdated)
 
     def test_false_if_irrigation_ok(self, m):
