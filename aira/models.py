@@ -583,9 +583,7 @@ class AppliedIrrigation(models.Model):
     def volume(self):
         if self.irrigation_type == "VOLUME_OF_WATER":
             return self.supplied_water_volume
-
         try:
-            # Wrapped in a try-except in case of null values exceptions
             if self.irrigation_type == "DURATION_OF_IRRIGATION":
                 return (self.supplied_duration / 60) * self.supplied_flow_rate
             elif self.irrigation_type == "FLOWMETER_READINGS":
@@ -593,16 +591,6 @@ class AppliedIrrigation(models.Model):
                 return difference * (100 / self.flowmeter_water_percentage)
         except TypeError:
             return None
-
-    @property
-    def system_default_volume(self):
-        # Can be used as a fallback whenever no volume is associated with the instance.
-        return (
-            float(self.agrifield.p)
-            * (self.agrifield.field_capacity - self.agrifield.wilting_point)
-            * self.agrifield.root_depth
-            * self.agrifield.wetted_area
-        )
 
     class Meta:
         get_latest_by = "timestamp"

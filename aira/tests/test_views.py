@@ -589,17 +589,11 @@ class AgrifieldReportViewTestCase(WrongUsernameTestMixin, DataTestCase):
             timestamp=tz.localize(dt.datetime(2019, 9, 11, 17, 23)),
             supplied_water_volume=None,
         )
-        self._update_agrifield(wetted_area=653.7)
         self._make_request()
         self.assertContains(
             self.response, "<b>Last recorded irrigation:</b> 11/09/2019 17:00 <br>"
         )
-        self.assertContains(
-            self.response,
-            "<b>Applied water (m³):</b> 93.2 "
-            "(Irrigation water is estimated using system's "
-            "default parameters.)",
-        )
+        self.assertContains(self.response, "<b>Applied water (m³):</b> Unspecified")
 
 
 class RemoveSuperviseeTestCase(DataTestCase):

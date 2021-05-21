@@ -10,9 +10,9 @@
     {% if object.last_irrigation %}
       <b>{% trans "Last recorded irrigation" %}:</b> {{ object.last_irrigation.timestamp|date:"d/m/Y H:00" }} <br>
       {% if object.last_irrigation.volume %}
-      <b>{% trans "Applied water" %} (m³):</b> {{ object.last_irrigation.volume|floatformat:"1" }}
+        <b>{% trans "Applied water" %} (m³):</b> {{ object.last_irrigation.volume|floatformat:"1" }}
       {% else %}
-      <b>{% trans "Applied water" %} (m³):</b> {{ object.last_irrigation.system_default_volume|floatformat:"1" }} ({% trans "Irrigation water is estimated using system's default parameters." %})
+        <b>{% trans "Applied water" %} (m³):</b> {% trans "Unspecified" %}
       {% endif %}
       <br>
     {% else %}
