@@ -5,6 +5,7 @@ import tempfile
 
 from django.contrib.auth.models import User
 from django.contrib.gis.geos import Point
+from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.db import IntegrityError
 from django.test import TestCase, override_settings
@@ -15,6 +16,92 @@ from swb import KcStage
 
 from aira import models
 from aira.tests import RandomMediaRootMixin
+
+
+class DayAndMonthTestCase(TestCase):
+    def test_incorrect_type_for_day_does_not_validate(self):
+        with self.assertRaises(ValidationError):
+            models.DayAndMonth(1.0, 1)
+
+    def test_incorrect_type_for_month_does_not_validate(self):
+        with self.assertRaises(ValidationError):
+            models.DayAndMonth(1, 1.0)
+
+    def test_month_less_than_1_does_not_validate(self):
+        with self.assertRaises(ValidationError):
+            models.DayAndMonth(1, 0)
+
+    def test_month_greater_than_12_does_not_validate(self):
+        with self.assertRaises(ValidationError):
+            models.DayAndMonth(1, 13)
+
+    def test_day_less_than_1_does_not_validate(self):
+        with self.assertRaises(ValidationError):
+            models.DayAndMonth(0, 1)
+
+    def test_day_greater_than_month_days_does_not_validate(self):
+        with self.assertRaises(ValidationError):
+            models.DayAndMonth(29, 2)
+
+    def test_correct_input_validates(self):
+        day_and_month = models.DayAndMonth(29, 4)
+        self.assertEqual(day_and_month.day, 29)
+        self.assertEqual(day_and_month.month, 4)
+
+    def test_from_string_without_slash_does_not_validate(self):
+        with self.assertRaises(ValidationError):
+            models.DayAndMonth.from_string("hello")
+
+    def test_from_string_without_more_than_one_slash_does_not_validate(self):
+        with self.assertRaises(ValidationError):
+            models.DayAndMonth.from_string("hello/my/world")
+
+    def test_from_string_with_non_integers_does_not_validate(self):
+        with self.assertRaises(ValidationError):
+            models.DayAndMonth.from_string("29.0/4.0")
+
+    def test_from_string_valid_string_validates(self):
+        day_and_month = models.DayAndMonth.from_string("29/4")
+        self.assertEqual(day_and_month.day, 29)
+        self.assertEqual(day_and_month.month, 4)
+
+    def test_str(self):
+        day_and_month = models.DayAndMonth(29, 4)
+        self.assertEqual(str(day_and_month), "29/04")
+
+
+class DayAndMonthFieldTestCase(TestCase):
+    def test_get_prep_value_none(self):
+        self.assertEqual(models.DayAndMonthField().get_prep_value(None), "")
+
+    def test_get_prep_value_empty(self):
+        self.assertEqual(models.DayAndMonthField().get_prep_value(""), "")
+
+    def test_get_prep_value_not_empty(self):
+        value = models.DayAndMonth(29, 4)
+        self.assertEqual(models.DayAndMonthField().get_prep_value(value), "29/04")
+
+    def test_from_db_value_empty_string(self):
+        self.assertIsNone(models.DayAndMonthField().from_db_value("", None, None))
+
+    def test_from_db_value_nonempty_string(self):
+        day_and_month = models.DayAndMonthField().from_db_value("29/04", None, None)
+        self.assertEqual(day_and_month.day, 29)
+        self.assertEqual(day_and_month.month, 4)
+
+    def test_to_python_from_DayAndMonth_object(self):
+        day_and_month = models.DayAndMonth(29, 4)
+        result = models.DayAndMonthField().to_python(day_and_month)
+        self.assertEqual(result.day, 29)
+        self.assertEqual(result.month, 4)
+
+    def test_to_python_from_none(self):
+        self.assertIsNone(models.DayAndMonthField().to_python(None))
+
+    def test_to_python_from_string(self):
+        result = models.DayAndMonthField().to_python("29/4")
+        self.assertEqual(result.day, 29)
+        self.assertEqual(result.month, 4)
 
 
 class UserTestCase(TestCase):
@@ -51,6 +138,7 @@ class AgrifieldTestCaseBase(TestCase):
             root_depth_min=1.2,
             max_allowed_depletion=0.5,
             fek_category=4,
+            planting_date="15/03",
         )
         self.irrigation_type = mommy.make(
             models.IrrigationType, name="Surface irrigation", efficiency=0.60
@@ -136,7 +224,9 @@ class AgrifieldDeletesCachedPointTimeseriesOnSave(AgrifieldTestCaseBase):
 class AgrifieldSoilAnalysisTestCase(TestCase, RandomMediaRootMixin):
     def setUp(self):
         self.override_media_root()
-        self.agrifield = mommy.make(models.Agrifield, owner__username="bob")
+        self.agrifield = mommy.make(
+            models.Agrifield, owner__username="bob", crop_type__planting_date="15/03"
+        )
         self.agrifield.soil_analysis.save("somefile", ContentFile("hello world"))
 
     def tearDown(self):
@@ -156,11 +246,13 @@ class AgrifieldSoilAnalysisTestCase(TestCase, RandomMediaRootMixin):
 class AgrifieldMostRecentPlantingDateTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.crop_type = mommy.make(models.CropType, planting_date=dt.date(1971, 3, 15))
+        cls.crop_type = mommy.make(
+            models.CropType, planting_date=models.DayAndMonth(15, 3)
+        )
         cls.agrifield = mommy.make(
             models.Agrifield,
             crop_type=cls.crop_type,
-            custom_planting_date=dt.date(1971, 4, 5),
+            custom_planting_date=models.DayAndMonth(5, 4),
             use_custom_parameters=False,
         )
 
@@ -190,7 +282,7 @@ class CropTypeKcStagesTestCase(TestCase):
     def setUp(self):
         self.crop_type = mommy.make(
             models.CropType,
-            planting_date=dt.datetime(1971, 3, 21),
+            planting_date=models.DayAndMonth(21, 3),
             kc_offseason=0.3,
             kc_plantingdate=0.7,
         )
@@ -225,7 +317,7 @@ class CropTypeCustomTestCase(TestCase):
             max_allowed_depletion=0.5,
             kc_plantingdate=0.7,
             kc_offseason=0.3,
-            planting_date=dt.datetime(1971, 3, 21),
+            planting_date=models.DayAndMonth(21, 3),
             fek_category=5,
             custom=custom,
         )
@@ -253,7 +345,7 @@ class CropTypeCustomTestCase(TestCase):
 
 class AgrifieldLatestAppliedIrrigationDefaultsTestCase(TestCase):
     def setUp(self):
-        self.agrifield = mommy.make(models.Agrifield)
+        self.agrifield = mommy.make(models.Agrifield, crop_type__planting_date="15/03")
 
     def test_no_applied_irrigations_present(self):
         defaults = self.agrifield.get_applied_irrigation_defaults()
@@ -329,7 +421,7 @@ class AgrifieldLatestAppliedIrrigationDefaultsTestCase(TestCase):
 
 class AgrifieldCustomKcStagesTestCase(TestCase):
     def setUp(self):
-        self.agrifield = mommy.make(models.Agrifield)
+        self.agrifield = mommy.make(models.Agrifield, crop_type__planting_date="15/03")
         csv = "15 0.9\n25 0.8"
         self.agrifield.set_custom_kc_stages(csv)
 
@@ -357,6 +449,7 @@ class AppliedIrrigationTestCase(TestCase):
             "flowmeter_reading_start": 100,
             "flowmeter_reading_end": 100,
             "flowmeter_water_percentage": 100,
+            "agrifield__crop_type__planting_date": "15/03",
         }
 
     def test_calculated_volume_supplied_water_volume(self):
@@ -396,7 +489,9 @@ class AppliedIrrigationTestCase(TestCase):
         types = ["VOLUME_OF_WATER", "DURATION_OF_IRRIGATION", "FLOWMETER_READINGS"]
         for ir_type in types:
             irrigation = mommy.make(
-                models.AppliedIrrigation, irrigation_type="DURATION_OF_IRRIGATION"
+                models.AppliedIrrigation,
+                irrigation_type="DURATION_OF_IRRIGATION",
+                agrifield__crop_type__planting_date="15/03",
             )
             self.assertIsNone(irrigation.volume)
 
@@ -404,7 +499,7 @@ class AppliedIrrigationTestCase(TestCase):
 class AppliedIrrigationUniqueTogetherConstraintTestCase(TestCase):
     def test_duplicate_point_raises(self):
         time = dt.datetime(2020, 10, 10, 0, 0, tzinfo=dt.timezone.utc)
-        agrifield = mommy.make(models.Agrifield)
+        agrifield = mommy.make(models.Agrifield, crop_type__planting_date="15/03")
         self.assertEqual(models.AppliedIrrigation.objects.count(), 0)
         mommy.make(
             models.AppliedIrrigation,
@@ -433,6 +528,7 @@ class AppliedIrrigationUniqueTogetherConstraintTestCase(TestCase):
             irrigation_type="VOLUME_OF_WATER",
             supplied_water_volume=1337,
             timestamp=time,
+            agrifield__crop_type__planting_date="15/03",
         )
         mommy.make(
             models.AppliedIrrigation,
@@ -440,12 +536,13 @@ class AppliedIrrigationUniqueTogetherConstraintTestCase(TestCase):
             irrigation_type="VOLUME_OF_WATER",
             supplied_water_volume=1337,
             timestamp=time,
+            agrifield__crop_type__planting_date="15/03",
         )
         self.assertEqual(models.AppliedIrrigation.objects.count(), 2)
 
     def test_same_agrifield_diff_volume_same_time(self):
         time = dt.datetime(2020, 10, 10, 0, 0, tzinfo=dt.timezone.utc)
-        agrifield = mommy.make(models.Agrifield)
+        agrifield = mommy.make(models.Agrifield, crop_type__planting_date="15/03")
         self.assertEqual(models.AppliedIrrigation.objects.count(), 0)
         mommy.make(
             models.AppliedIrrigation,
@@ -466,7 +563,7 @@ class AppliedIrrigationUniqueTogetherConstraintTestCase(TestCase):
         self.assertEqual(models.AppliedIrrigation.objects.count(), 2)
 
     def test_same_agrifield_same_volume_diff_time(self):
-        agrifield = mommy.make(models.Agrifield)
+        agrifield = mommy.make(models.Agrifield, crop_type__planting_date="15/03")
         self.assertEqual(models.AppliedIrrigation.objects.count(), 0)
         mommy.make(
             models.AppliedIrrigation,
@@ -487,8 +584,16 @@ class AppliedIrrigationUniqueTogetherConstraintTestCase(TestCase):
 
 class TelemetricFlowmeterDeleteAllTestCase(TestCase):
     def setUp(self):
-        self.flowmeter1 = mommy.make(models.LoRA_ARTAFlowmeter, agrifield__id=1)
-        self.flowmeter2 = mommy.make(models.LoRA_ARTAFlowmeter, agrifield__id=2)
+        self.flowmeter1 = mommy.make(
+            models.LoRA_ARTAFlowmeter,
+            agrifield__id=1,
+            agrifield__crop_type__planting_date="15/03",
+        )
+        self.flowmeter2 = mommy.make(
+            models.LoRA_ARTAFlowmeter,
+            agrifield__id=2,
+            agrifield__crop_type__planting_date="15/03",
+        )
         models.TelemetricFlowmeter.delete_all(agrifield=self.flowmeter1.agrifield)
 
     def test_flowmeter_of_agrifield1_have_been_deleted(self):
@@ -509,6 +614,7 @@ class LoRA_ARTAFlowmeterTestCase(TestCase):
             device_id="1337",
             flowmeter_water_percentage=50,
             report_frequency_in_minutes=15,
+            agrifield__crop_type__planting_date="15/03",
         )
 
     def test_calculate_water_volume(self):

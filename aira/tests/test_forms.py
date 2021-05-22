@@ -1,16 +1,9 @@
-import datetime as dt
-
 from django.test import TestCase
 
 from model_mommy import mommy
 
 from aira import models
-from aira.forms import (
-    AgrifieldForm,
-    AppliedIrrigationForm,
-    DateInputWithoutYear,
-    MyRegistrationForm,
-)
+from aira.forms import AgrifieldForm, AppliedIrrigationForm, MyRegistrationForm
 
 
 class RegistrationFormTestCase(TestCase):
@@ -44,7 +37,9 @@ class RegistrationFormTestCase(TestCase):
 class AppliedIrrigationFormTestCase(TestCase):
     def setUp(self):
         self.data = {
-            "agrifield": mommy.make(models.Agrifield).id,
+            "agrifield": mommy.make(
+                models.Agrifield, crop_type__planting_date="15/03"
+            ).id,
             "timestamp": "2020-02-02",
         }
 
@@ -75,26 +70,9 @@ class AppliedIrrigationFormTestCase(TestCase):
         )
 
 
-class DateInputWithoutYearTestCase(TestCase):
-    def setUp(self):
-        self.widget = DateInputWithoutYear()
-
-    def test_format(self):
-        self.assertEqual(self.widget.format, "%d/%m")
-
-    def test_value_from_datadict(self):
-        data = {"mydate": "03/05"}
-        result = self.widget.value_from_datadict(data=data, files=None, name="mydate")
-        self.assertEqual(result, "1970-05-03")
-
-    def test_empty_value_from_datadict(self):
-        result = self.widget.value_from_datadict(data={}, files=None, name="mydate")
-        self.assertIsNone(result)
-
-
 class AgrifieldFormCleanKcStagesTestCase(TestCase):
     def setUp(self):
-        self.agrifield = mommy.make(models.Agrifield)
+        self.agrifield = mommy.make(models.Agrifield, crop_type__planting_date="15/03")
         self.post_data = {
             "name": "Great tomatoes",
             "location_0": 20.87591,
@@ -183,7 +161,7 @@ class AgrifieldFormCleanKcStagesTestCase(TestCase):
 
 class AgrifieldFormCleanUseCustomParametersTestCase(TestCase):
     def setUp(self):
-        self.agrifield = mommy.make(models.Agrifield)
+        self.agrifield = mommy.make(models.Agrifield, crop_type__planting_date="15/03")
         self.post_data = {
             "name": "Great tomatoes",
             "location_0": 20.87591,
@@ -212,7 +190,8 @@ class AgrifieldFormCleanUseCustomParametersTestCase(TestCase):
 class AgrifieldFormInitializeTestCase(TestCase):
     def setUp(self):
         self.agrifield = mommy.make(
-            models.Agrifield, crop_type__planting_date=dt.date(1970, 3, 17)
+            models.Agrifield,
+            crop_type__planting_date=models.DayAndMonth(17, 3),
         )
         self._make_kc_stage(order=1, ndays=5, kc_end=0.1)
         self._make_kc_stage(order=2, ndays=4, kc_end=0.2)
@@ -238,7 +217,7 @@ class AgrifieldFormInitializeTestCase(TestCase):
 
 class AgrifieldFormSaveTestCase(TestCase):
     def setUp(self):
-        self.agrifield = mommy.make(models.Agrifield)
+        self.agrifield = mommy.make(models.Agrifield, crop_type__planting_date="15/03")
         self.post_data = {
             "name": "Great tomatoes",
             "location_0": 20.87591,

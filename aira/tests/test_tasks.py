@@ -77,8 +77,18 @@ class LoRA_ARTAFlowmeterTTNIntegrationTestCase(TestCase):
 
     @patch("aira.tasks.requests.get")
     def test_irrigations_created_for_correct_flowmeter(self, mocked_get):
-        f1 = mommy.make(models.LoRA_ARTAFlowmeter, id=1, device_id="1")
-        f2 = mommy.make(models.LoRA_ARTAFlowmeter, id=2, device_id="2")
+        f1 = mommy.make(
+            models.LoRA_ARTAFlowmeter,
+            id=1,
+            device_id="1",
+            agrifield__crop_type__planting_date="15/03",
+        )
+        f2 = mommy.make(
+            models.LoRA_ARTAFlowmeter,
+            id=2,
+            device_id="2",
+            agrifield__crop_type__planting_date="15/03",
+        )
         self.data_points[0]["device_id"] = "1"
         self.data_points[1]["device_id"] = "2"
         self.data_points[2]["device_id"] = "1"
@@ -99,7 +109,12 @@ class LoRA_ARTAFlowmeterTTNIntegrationTestCase(TestCase):
         self.data_points[2]["device_id"] = "1338"
         mocked_get.return_value = MockResponse(data_points=self.data_points)
 
-        mommy.make(models.LoRA_ARTAFlowmeter, id=1337, device_id="1337")
+        mommy.make(
+            models.LoRA_ARTAFlowmeter,
+            id=1337,
+            device_id="1337",
+            agrifield__crop_type__planting_date="15/03",
+        )
         with patch("aira.tasks.logger.warn") as mock_log:
             self.assertEqual(mock_log.call_count, 0)
             add_irrigations_from_telemetric_flowmeters()

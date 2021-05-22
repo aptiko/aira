@@ -11,6 +11,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models
 from django.core.cache import cache
+from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import IntegrityError
@@ -51,6 +52,78 @@ notification_options = OrderedDict(
 YES_OR_NO = ((True, _("Yes")), (False, _("No")))
 
 EMAIL_LANGUAGE_CHOICES = (("en", "English"), ("el", "Ελληνικά"))
+
+
+class DayAndMonth:
+    _month_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+    def __init__(self, day, month):
+        self.validate(day, month)
+        self.day = day
+        self.month = month
+
+    @staticmethod
+    def validate(day, month):
+        try:
+            if not isinstance(day, int) or not isinstance(month, int):
+                raise TypeError()
+            if month < 1 or month > 12:
+                raise TypeError()
+            day_is_valid = day >= 1 and day <= DayAndMonth._month_days[month - 1]
+            if not day_is_valid:
+                raise TypeError()
+        except TypeError:
+            raise ValidationError(
+                _("{}/{} is not a valid day/month pair").format(day, month)
+            )
+
+    @classmethod
+    def from_string(cls, s):
+        try:
+            sday, smonth = s.split("/")
+            day, month = int(sday), int(smonth)
+            return cls(day, month)
+        except ValueError:
+            raise ValidationError(_("{} is not a valid day/month value").format(s))
+
+    def __str__(self):
+        return f"{self.day:02}/{self.month:02}"
+
+
+class DayAndMonthField(models.Field):
+    description = "Day and month; e.g. 28/2 is 28 February"
+
+    def __init__(self, *args, **kwargs):
+        kwargs["max_length"] = 5
+        kwargs["null"] = False
+        super().__init__(*args, **kwargs)
+
+    def get_internal_type(self):
+        return "CharField"
+
+    def deconstruct(self):
+        name, path, args, kwargs = super().deconstruct()
+        del kwargs["max_length"]
+        return name, path, args, kwargs
+
+    def get_prep_value(self, value):
+        if not value:
+            return ""
+        return str(value)
+
+    def from_db_value(self, value, expression, connection):
+        if not value:
+            return None
+        return DayAndMonth.from_string(value)
+
+    def to_python(self, value):
+        if isinstance(value, DayAndMonth) or value is None:
+            return value
+        return DayAndMonth.from_string(value)
+
+    def formfield(self, **kwargs):
+        kwargs["max_length"] = 5
+        return super().formfield(**kwargs)
 
 
 class Profile(models.Model):
@@ -116,7 +189,7 @@ class CropType(models.Model):
     max_allowed_depletion = models.FloatField()
     kc_plantingdate = models.FloatField()
     kc_offseason = models.FloatField(verbose_name="Kc off-season")
-    planting_date = models.DateField()
+    planting_date = DayAndMonthField()
     fek_category = models.IntegerField()
 
     class Meta:
@@ -212,7 +285,7 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
         blank=True,
         validators=[MaxValueValidator(1.50), MinValueValidator(0.10)],
     )
-    custom_planting_date = models.DateField(null=True, blank=True)
+    custom_planting_date = DayAndMonthField(null=True, blank=True)
     custom_root_depth_max = models.FloatField(
         null=True,
         blank=True,
@@ -525,7 +598,9 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
     @property
     def most_recent_planting_date(self):
         today = dt.date.today()
-        result = self.planting_date.replace(year=today.year)
+        result = today.replace(
+            month=self.planting_date.month, day=self.planting_date.day
+        )
         if result <= today:
             return result
         return result.replace(year=today.year - 1)

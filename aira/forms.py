@@ -33,19 +33,6 @@ class ProfileForm(forms.ModelForm):
         }
 
 
-class DateInputWithoutYear(forms.DateInput):
-    def __init__(self, attrs=None, format=None):
-        if format is None:
-            format = "%d/%m"
-        super().__init__(attrs=attrs, format=format)
-
-    def value_from_datadict(self, data, files, name):
-        input = data.get(name)
-        if input:
-            day, month = input.split("/")
-            return f"1970-{month}-{day}"
-
-
 class AgrifieldForm(forms.ModelForm):
     location = LatLonField(
         label=_("Co-ordinates"),
@@ -120,17 +107,14 @@ class AgrifieldForm(forms.ModelForm):
             "custom_wilting_point": _("Permanent wilting point"),
             "soil_analysis": _("Soil analysis document"),
         }
-        widgets = {
-            "custom_planting_date": DateInputWithoutYear(),
-        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance.pk:
             self.initial["kc_stages"] = self.instance.kc_stages_str
-            self.initial[
-                "default_planting_date"
-            ] = self.instance.crop_type.planting_date.strftime("%d/%m")
+            self.initial["default_planting_date"] = str(
+                self.instance.crop_type.planting_date
+            )
 
     def clean_kc_stages(self):
         data = self.cleaned_data["kc_stages"]

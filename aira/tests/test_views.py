@@ -89,7 +89,7 @@ class MyFieldsViewTestCase(TestCase):
 
 class DemoViewTestCase(TestCase):
     def setUp(self):
-        mommy.make(models.CropType, id=1)
+        mommy.make(models.CropType, id=1, planting_date="15/03")
         mommy.make(models.IrrigationType, id=1)
         assert not User.objects.filter(username="demo").exists()
         self.response = self.client.get("/try/")
@@ -405,7 +405,11 @@ class AgrifieldTimeseriesViewTestCase(WrongUsernameTestMixin, TestCase):
 
     def _create_agrifield(self):
         self.agrifield = mommy.make(
-            models.Agrifield, name="hello", location=Point(23, 38), owner=self.alice
+            models.Agrifield,
+            name="hello",
+            location=Point(23, 38),
+            owner=self.alice,
+            crop_type__planting_date="15/03",
         )
 
     def _login(self):
@@ -458,7 +462,9 @@ class DownloadSoilAnalysisViewTestCase(
         self.alice = User.objects.create_user(
             id=54, username="alice", password="topsecret"
         )
-        self.agrifield = mommy.make(models.Agrifield, id=1, owner=self.alice)
+        self.agrifield = mommy.make(
+            models.Agrifield, id=1, owner=self.alice, crop_type__planting_date="15/03"
+        )
         self.agrifield.soil_analysis.save("somefile", ContentFile("hello world"))
         self.client.login(username="alice", password="topsecret")
         self.response = self.client.get("/alice/fields/1/soil_analysis/")
@@ -964,7 +970,9 @@ class AppliedIrrigationsViewTestCase(WrongUsernameTestMixin, TestCase):
     def setUp(self):
         owner = User.objects.create_user(username="bob", password="topsecret")
         self.client.login(username="bob", password="topsecret")
-        self.agrifield = mommy.make(models.Agrifield, owner=owner)
+        self.agrifield = mommy.make(
+            models.Agrifield, owner=owner, crop_type__planting_date="15/03"
+        )
 
     @patch("aira.models.Agrifield.get_applied_irrigation_defaults")
     def test_applied_irrigation_defaults(self, mock):
@@ -1011,8 +1019,12 @@ class AppliedIrrigationWrongAgrifieldTestMixin:
     @classmethod
     def setUpTestData(cls):
         owner = User.objects.create_user(username="bob", password="topsecret")
-        cls.agrifield = mommy.make(models.Agrifield, owner=owner)
-        cls.agrifield2 = mommy.make(models.Agrifield, owner=owner)
+        cls.agrifield = mommy.make(
+            models.Agrifield, owner=owner, crop_type__planting_date="15/03"
+        )
+        cls.agrifield2 = mommy.make(
+            models.Agrifield, owner=owner, crop_type__planting_date="15/03"
+        )
         cls.applied_irrigation = mommy.make(
             models.AppliedIrrigation, agrifield=cls.agrifield, id=101
         )
@@ -1303,8 +1315,15 @@ class TelemetricFlowmeterViewMixinTestCase(TestCase):
     def setUp(self):
         self.alice = User.objects.create_user(username="alice", password="topsecret")
         self.bob = User.objects.create_user(username="bob", password="topsecret")
-        self.agrifield = mommy.make(models.Agrifield, id=1337, owner=self.bob)
-        mommy.make(models.Agrifield, id=1338, owner=self.alice)
+        self.agrifield = mommy.make(
+            models.Agrifield, id=1337, owner=self.bob, crop_type__planting_date="15/03"
+        )
+        mommy.make(
+            models.Agrifield,
+            id=1338,
+            owner=self.alice,
+            crop_type__planting_date="15/03",
+        )
         self.client.login(username="bob", password="topsecret")
         self.post_data = {
             "LoRA_ARTA-agrifield": 1337,

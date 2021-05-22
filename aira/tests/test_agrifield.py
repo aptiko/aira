@@ -114,7 +114,7 @@ class SetupTestDataMixin:
             fek_category=4,
             kc_offseason=0.7,
             kc_plantingdate=0.7,
-            planting_date=dt.date(2018, 3, 16),
+            planting_date=models.DayAndMonth(16, 3),
         )
 
     @classmethod
@@ -136,7 +136,7 @@ class SetupTestDataMixin:
             wetted_area=2000,
             custom_kc_offseason=0.3,
             custom_kc_plantingdate=0.35,
-            custom_planting_date=dt.date(1970, 3, 20),
+            custom_planting_date=models.DayAndMonth(20, 3),
         )
 
     @classmethod
@@ -321,7 +321,9 @@ _in_covered_area = "aira.models.Agrifield.in_covered_area"
 @override_settings(CACHES={"default": {"BACKEND": _locmemcache}})
 class NeedsIrrigationTestCase(TestCase):
     def setUp(self):
-        self.agrifield = mommy.make(models.Agrifield, id=1)
+        self.agrifield = mommy.make(
+            models.Agrifield, id=1, crop_type__planting_date="15/03"
+        )
 
     def tearDown(self):
         cache.delete("model_run_1")
@@ -525,7 +527,7 @@ class InitialConditionsTestCase(DataTestCase):
 
 class StartOfSeasonTestCase(TestCase):
     def setUp(self):
-        self.agrifield = mommy.make(models.Agrifield)
+        self.agrifield = mommy.make(models.Agrifield, crop_type__planting_date="15/03")
 
     @freeze_time("2018-01-01 13:00:01")
     def test_jan_1(self):

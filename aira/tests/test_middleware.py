@@ -10,7 +10,9 @@ class PermissionsTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls._create_users()
-        cls.agrifield = mommy.make(models.Agrifield, owner=cls.charlie)
+        cls.agrifield = mommy.make(
+            models.Agrifield, owner=cls.charlie, crop_type__planting_date="15/03"
+        )
 
     @classmethod
     def _create_users(cls):
