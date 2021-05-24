@@ -186,6 +186,18 @@ class AgrifieldTestCase(AgrifieldTestCaseBase):
     def test_agrifield_use_custom_parameters_default_value(self):
         self.assertFalse(self.agrifield.use_custom_parameters)
 
+    def test_wetted_area_must_be_larger_than_zero(self):
+        with self.assertRaises(ValidationError):
+            agrifield = models.Agrifield(
+                owner=self.user,
+                name="A field",
+                crop_type=self.crop_type,
+                irrigation_type=self.irrigation_type,
+                location=Point(18.0, 23.0),
+                wetted_area=0,
+            )
+            agrifield.full_clean()
+
 
 class AgrifieldDeletesCachedPointTimeseriesOnSave(AgrifieldTestCaseBase):
     def setUp(self):

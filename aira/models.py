@@ -262,11 +262,13 @@ class Agrifield(models.Model, AgrifieldSWBMixin, AgrifieldSWBResultsMixin):
     location = models.PointField()
     crop_type = models.ForeignKey(CropType, on_delete=models.CASCADE)
     irrigation_type = models.ForeignKey(IrrigationType, on_delete=models.CASCADE)
-    total_area = models.FloatField(blank=True, null=True, verbose_name=_("Total area"))
-    irrigated_area = models.FloatField(
+    total_area = models.PositiveIntegerField(
+        blank=True, null=True, verbose_name=_("Total area")
+    )
+    irrigated_area = models.PositiveIntegerField(
         blank=True, null=True, verbose_name=_("Irrigated area")
     )
-    wetted_area = models.FloatField()
+    wetted_area = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     use_custom_parameters = models.BooleanField(default=False)
     custom_parameter_set_name = models.CharField(
         blank=True,
