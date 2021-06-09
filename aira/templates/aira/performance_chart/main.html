@@ -42,7 +42,7 @@
       xAxis: {
         categories: [
           {% for date, data in object.results.timeseries.iterrows %}
-            "{{ date | date }}" {% if not forloop.last %},{% endif %}
+            "{{ date | date }}",
           {% endfor %}
         ],
         type: 'datetime',
@@ -70,7 +70,7 @@
         "data": [
           {% localize off %}
             {% for date, row in object.results.timeseries.iterrows %}
-              {{ row.ifinal_theoretical }} {% if not forloop.last %},{% endif %}
+              {{ row.ifinal_theoretical }},
             {% endfor %}
           {% endlocalize %}
         ]
@@ -79,7 +79,7 @@
         "data": [
           {% localize off %}
             {% for date, row in object.results.timeseries.iterrows %}
-              {{ row.applied_irrigation|default:0 }} {% if not forloop.last %},{% endif %}
+              {{ row.assumed_total_irrigation|default:0 }},
             {% endfor %}
           {% endlocalize %}
         ]
@@ -90,7 +90,7 @@
         "data": [
           {% localize off %}
             {% for date, row in object.results.timeseries.iterrows %}
-              {{ row.effective_precipitation }} {% if not forloop.last %},{% endif %}
+              {{ row.effective_precipitation }},
             {% endfor %}
           {% endlocalize %}
         ]

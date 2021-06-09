@@ -457,6 +457,7 @@ def mock_calculate_soil_water(**kwargs):
     timeseries["theta"] = 0
     timeseries["ks"] = 0
     timeseries["recommended_net_irrigation"] = 0
+    timeseries["assumed_net_irrigation"] = 0
     return {"raw": 0, "taw": 0, "timeseries": timeseries}
 
 

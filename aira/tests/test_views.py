@@ -912,7 +912,7 @@ class IrrigationPerformanceViewTestCase(WrongUsernameTestMixin, DataTestCase):
 
     def test_applied_water_when_irrigation_determined_automatically(self):
         self.assertAlmostEqual(
-            self.series["Applied irrigation water amount"][4], 125.20833333
+            self.series["Applied irrigation water amount"][4], 143.03662336
         )
 
     def test_total_applied_water(self):
@@ -923,9 +923,9 @@ class IrrigationPerformanceViewTestCase(WrongUsernameTestMixin, DataTestCase):
             re.MULTILINE,
         )
         total_applied_water_mm = int(m.group(1))
-        self.assertEqual(total_applied_water_mm, 375)
+        self.assertEqual(total_applied_water_mm, 393)
         total_applied_water_cubic = int(m.group(2))
-        self.assertEqual(total_applied_water_cubic, 750)
+        self.assertEqual(total_applied_water_cubic, 786)
 
 
 class IrrigationPerformanceCsvTestCase(WrongUsernameTestMixin, DataTestCase):

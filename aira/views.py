@@ -18,8 +18,6 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 
-import pandas as pd
-
 from . import forms, models
 
 
@@ -62,10 +60,7 @@ class IrrigationPerformanceView(CheckUsernameMixin, DetailView):
 
     def _get_sum_applied_irrigation(self):
         results = self.object.results
-        sum_applied_irrigation = results["timeseries"].applied_irrigation
-        sum_applied_irrigation = pd.to_numeric(sum_applied_irrigation)
-        sum_applied_irrigation[sum_applied_irrigation.isna()] = 0
-        sum_applied_irrigation = sum_applied_irrigation.sum()
+        sum_applied_irrigation = results["timeseries"].assumed_total_irrigation.sum()
         self.context["sum_applied_irrigation"] = sum_applied_irrigation
         self.context["sum_applied_irrigation_cubic"] = (
             sum_applied_irrigation * self.object.wetted_area / 1000

@@ -147,6 +147,9 @@ class AgrifieldSWBMixin:
         self.timeseries["ifinal_m3"] = (
             self.timeseries["ifinal"] / 1000 * self.wetted_area
         )
+        self.timeseries["assumed_total_irrigation"] = (
+            self.timeseries["assumed_net_irrigation"] / self.irrigation_efficiency
+        )
 
     def _extract_columns_from_timeseries(self, *cols):
         result = {}
