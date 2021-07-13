@@ -140,10 +140,10 @@ class AgrifieldSWBMixin:
         d = self.run_swb_model()
         self.raw = d["raw"]
         self.taw = d["taw"]
-        self.timeseries["recommendation"] = self.timeseries["dr"] > self.raw
         self.timeseries["ifinal"] = (
             self.timeseries["recommended_net_irrigation"] / self.irrigation_efficiency
         )
+        self.timeseries["recommendation"] = self.timeseries["ifinal"] > 0
         self.timeseries["ifinal_m3"] = (
             self.timeseries["ifinal"] / 1000 * self.wetted_area
         )

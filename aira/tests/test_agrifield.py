@@ -314,6 +314,41 @@ class ExecuteModelTestCase(DataTestCase):
         )
 
 
+class FutureIrrigationDoesNotAffectRecommendationTestCase(DataTestCase):
+    @classmethod
+    def _create_applied_irrigations(cls):
+        # Create an applied irrigation in the future
+        cls.applied_irrigation_1 = mommy.make(
+            models.AppliedIrrigation,
+            agrifield=cls.agrifield,
+            timestamp=dt.datetime(2018, 3, 19, 7, 0, tzinfo=dt.timezone.utc),
+            supplied_water_volume=300,
+        )
+
+    def setUp(self):
+        super().setUp()
+        self.results = self.agrifield.execute_model()
+        self.timeseries = self.results["timeseries"]
+
+    def test_recommendation(self):
+        # The purpose of this test is to ensure that the applied irrigation that is in
+        # the future has been ignored when determining "recommendation", which is a
+        # yes/no value. There have been no irrigations (except for the one in the
+        # future), so the recommendation in 2018-03-19 (which is in the future) must be
+        # "yes". If that irrigation had been taken into account, "recommendation" in
+        # 2018-03-19 would have been "no".
+        #
+        # Normally the user should not enter applied irrigations with a future date,
+        # but it would be error-prone to try to enforce that, and users often do enter
+        # such irrigations. So at least we make sure we ignore them.
+        var = "recommendation"
+        self.assertFalse(self.timeseries.at[pd.Timestamp("2018-03-15 23:59"), var])
+        self.assertFalse(self.timeseries.at[pd.Timestamp("2018-03-16 23:59"), var])
+        self.assertFalse(self.timeseries.at[pd.Timestamp("2018-03-17 23:59"), var])
+        self.assertTrue(self.timeseries.at[pd.Timestamp("2018-03-18 23:59"), var])
+        self.assertTrue(self.timeseries.at[pd.Timestamp("2018-03-19 23:59"), var])
+
+
 _locmemcache = "django.core.cache.backends.locmem.LocMemCache"
 _in_covered_area = "aira.models.Agrifield.in_covered_area"
 
