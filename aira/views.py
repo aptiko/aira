@@ -98,6 +98,8 @@ class IrrigationPerformanceCsvView(CheckUsernameMixin, View):
         )
         writer.writerow(["", "amount (mm)", "amount (mm)", "amount (mm)"])
         for date, row in f.results["timeseries"].iterrows():
+            if date > f.results["historical_end_date"]:
+                break
             writer.writerow(
                 [
                     date,

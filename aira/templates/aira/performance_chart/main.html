@@ -41,8 +41,10 @@
       subtitle: {text: "{{ object.crop_type }} - {{ object.irrigation_type }}"},
       xAxis: {
         categories: [
-          {% for date, data in object.results.timeseries.iterrows %}
-            "{{ date | date }}",
+          {% for date, row in object.results.timeseries.iterrows %}
+            {% if date <= object.results.historical_end_date %}
+              "{{ date | date }}",
+            {% endif %}
           {% endfor %}
         ],
         type: 'datetime',
@@ -70,7 +72,9 @@
         "data": [
           {% localize off %}
             {% for date, row in object.results.timeseries.iterrows %}
-              {{ row.ifinal_theoretical }},
+              {% if date <= object.results.historical_end_date %}
+                {{ row.ifinal_theoretical }},
+              {% endif %}
             {% endfor %}
           {% endlocalize %}
         ]
@@ -79,7 +83,9 @@
         "data": [
           {% localize off %}
             {% for date, row in object.results.timeseries.iterrows %}
-              {{ row.assumed_total_irrigation|default:0 }},
+              {% if date <= object.results.historical_end_date %}
+                {{ row.assumed_total_irrigation|default:0 }},
+              {% endif %}
             {% endfor %}
           {% endlocalize %}
         ]
@@ -90,7 +96,9 @@
         "data": [
           {% localize off %}
             {% for date, row in object.results.timeseries.iterrows %}
-              {{ row.effective_precipitation }},
+              {% if date <= object.results.historical_end_date %}
+                {{ row.effective_precipitation }},
+              {% endif %}
             {% endfor %}
           {% endlocalize %}
         ]
